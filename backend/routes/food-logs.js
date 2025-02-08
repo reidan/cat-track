@@ -13,7 +13,7 @@ const QUERY_FOOD_LOGS = `
     fl.calories AS calories
   FROM food_logs fl
   INNER JOIN cats c ON c.id = fl.cat_id
-  INNER JOIN foods f ON f.id fl.food_id
+  INNER JOIN foods f ON f.id = fl.food_id
   ORDER BY fl.timestamp DESC
 `;
 
