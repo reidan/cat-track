@@ -25,7 +25,7 @@ const QUERY_WEEKLY_STATS = `
     SUM(calories) AS total_calories,
     (SELECT calorie_goal FROM cats WHERE id=$1) AS calorie_goal
   FROM food_logs 
-  WHERE cat_id=$1 AND DATE(f.timestamp AT TIME ZONE $1) >= NOW() - INTERVAL '7 days' 
+  WHERE cat_id=$1 AND DATE(f.timestamp AT TIME ZONE $2) >= NOW() - INTERVAL '7 days' 
   GROUP BY date 
   ORDER BY date
 `;

@@ -20,7 +20,7 @@ function Home() {
       fetchWeeklyFoodLogs(selectedCat).then((data) => {
         const formattedData = Object.entries(data).map(([date, values]) => ({
           date,
-          caloriesEaten: values.calories, //.toFixed(0),
+          caloriesEaten: values.calories.toFixed(0),
           calorieGoal: values.goal, //.toFixed(0),
         }));
         setWeeklyData(formattedData);
@@ -52,7 +52,7 @@ function Home() {
         </thead>
         <tbody>
           {dailySummaries.map((cat) => {
-            const caloriesEaten = cat.total_calories;
+            const caloriesEaten = cat.total_calories.toFixed(0);
             const calorieGoal = cat.calorie_goal || 0;
             const difference = caloriesEaten - calorieGoal;
             const progress = calorieGoal > 0 ? (caloriesEaten / calorieGoal) * 100 : 0;
