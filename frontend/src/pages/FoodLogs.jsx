@@ -39,6 +39,7 @@ function FoodLogs() {
   // Apply filters when button is clicked
   const applyFilters = () => {
     console.log(`Date: ${filters.date}`);
+    console.log(`Cat: ${filters.cat}`);
     var dateFilter = (new Date(filters.date)).toLocaleDateString();
     setFilteredLogs(
       foodLogs.filter(
