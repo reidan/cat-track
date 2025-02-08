@@ -4,13 +4,13 @@ import { fetchWeeklyFoodLogs, fetchDailySummary } from "../api";
 import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 function Home() {
-  const [dailySummary, setDailySummary] = useState([]);
+  const [dailySummaries, setDailySummaries] = useState([]);
   const [selectedCat, setSelectedCat] = useState(null);
   const [weeklyData, setWeeklyData] = useState([]);
 
   useEffect(() => {
     fetchDailySummary().then((data) => {
-      setCats(data);
+      setDailySummaries(data);
       if (data.length > 0) setSelectedCat(data[0].cat_id);
     });
   }, []);
@@ -51,7 +51,7 @@ function Home() {
           </tr>
         </thead>
         <tbody>
-          {cats?.map((cat) => {
+          {dailySummaries.map((cat) => {
             const caloriesEaten = cat.total_calories;
             const calorieGoal = cat.calorie_goal || 0;
             const difference = caloriesEaten - calorieGoal;
@@ -65,7 +65,7 @@ function Home() {
                     alt={cat.name}
                     className="w-16 h-16 object-cover rounded-full border"
                   />*/}
-                  {cat.name}</td>
+                  {cat.cat_name}</td>
                 <td className="px-4 py-2 text-center">{caloriesEaten.toFixed(0)} kcal</td>
                 <td className="px-4 py-2 text-center">{calorieGoal.toFixed(0)} kcal</td>
                 <td
