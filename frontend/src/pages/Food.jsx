@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { fetchFoods, addFood, putFood } from "../api";
 
 function Food() {
   const [foods, setFoods] = useState([]);
@@ -8,7 +8,9 @@ function Food() {
   const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
-    axios.get("/api/foods").then((response) => setFoods(response.data));
+    fetchFoods().then((data) => {
+      setFoods(data);
+    });
   }, []);
 
   // Open modal for adding a new food
@@ -37,21 +39,17 @@ function Food() {
 
     let response;
     if (isAdding) {
-      response = await axios.post("/api/foods", editingFood);
-      setFoods([...foods, response.data]);
+      addFood(editingFood).then((data) => {
+        setFoods([...foods, data]);
+      });
     } else {
-      await axios.put(`/api/foods/${editingFood.id}`, editingFood);
-      setFoods(foods.map((food) => (food.id === editingFood.id ? editingFood : food)));
+      putFood(editingFood.id, editingFood).then((data) => {
+        setFoods(foods.map((data) => (food.id === editingFood.id ? editingFood : food)));
+      });
     }
 
     setIsModalOpen(false);
     setEditingFood(null);
-  };
-
-  // Delete food
-  const deleteFood = async (id) => {
-    await axios.delete(`/api/foods/${id}`);
-    setFoods(foods.filter((food) => food.id !== id));
   };
 
   return (
@@ -90,12 +88,6 @@ function Food() {
                   className="text-blue-500 font-bold hover:underline"
                 >
                   ✏️ Edit
-                </button>
-                <button
-                  onClick={() => deleteFood(food.id)}
-                  className="text-red-500 font-bold hover:underline ml-2"
-                >
-                  🗑️ Delete
                 </button>
               </td>
             </tr>

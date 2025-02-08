@@ -7,8 +7,7 @@ function Cats() {
   const [editingCat, setEditingCat] = useState(null);
 
   useEffect(() => {
-    const cats = fetchCats();
-    setCats(cats);
+    fetchCats().then((data) => setCats(data));
   }, []);
 
   const openModal = (cat = null) => {
@@ -32,18 +31,13 @@ function Cats() {
 
     let response;
     if (editingCat.id) {
-      response = updateCat(editingCat.id, formData);
-      // axios.put(`/api/cats/${editingCat.id}`, formData, {
-      //   headers: { "Content-Type": "multipart/form-data" },
-      // });
-
-      setCats(cats.map((cat) => (cat.id === editingCat.id ? response.data : cat)));
+      updateCat(editingCat.id, formData).then((data) => {
+        cats.map((cat) => (cat.id === editingCat.id ? response.data : cat));
+      });
     } else {
-      response = addCat(formData);
-      // axios.post("/api/cats", formData, {
-      //   headers: { "Content-Type": "multipart/form-data" },
-      // });
-      setCats([...cats, response.data]);
+      addCat(formData).then((data) => {
+        setCats([...cats, data]);
+      });
     }
 
     setIsModalOpen(false);
