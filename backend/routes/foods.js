@@ -1,70 +1,58 @@
 const express = require("express");
-const fs = require("fs");
+const pool = require("../db");
+
 const router = express.Router();
 
-const FOODS_FILE = "foods.json";
-
-// Load food data
-const loadData = () => {
-  try {
-    return JSON.parse(fs.readFileSync(FOODS_FILE, "utf8"));
-  } catch (error) {
-    return [];
-  }
-};
-
-// Save food data
-const saveData = (data) => {
-  fs.writeFileSync(FOODS_FILE, JSON.stringify(data, null, 2));
-};
-
 // Get all foods
-router.get("/", (req, res) => {
-  const foods = loadData();
-  res.json(foods);
+router.get("/", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM foods ORDER BY name ASC");
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // Add a new food
-router.post("/", (req, res) => {
-  const foods = loadData();
-  const newFood = {
-    id: Date.now(),
-    name: req.body.name,
-    unit: req.body.unit,
-    calories: parseFloat(req.body.calories).toFixed(3), // Ensure decimal formatting
-  };
+router.post("/", async (req, res) => {
+  const { name, unit, calories } = req.body;
 
-  foods.push(newFood);
-  saveData(foods);
-  res.status(201).json(newFood);
-});
-
-// Update food
-router.put("/:id", (req, res) => {
-  const foods = loadData();
-  const foodIndex = foods.findIndex((food) => food.id === Number(req.params.id));
-
-  if (foodIndex === -1) {
-    return res.status(404).json({ error: "Food not found" });
+  try {
+    const result = await pool.query(
+      "INSERT INTO foods (name, unit, calories) VALUES ($1, $2, $3) RETURNING *",
+      [name, unit, parseFloat(calories)]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
   }
-
-  foods[foodIndex] = {
-    ...foods[foodIndex],
-    ...req.body,
-    calories: parseFloat(req.body.calories).toFixed(3), // Ensure decimal formatting
-  };
-
-  saveData(foods);
-  res.json(foods[foodIndex]);
 });
 
-// Delete food
-router.delete("/:id", (req, res) => {
-  let foods = loadData();
-  foods = foods.filter((food) => food.id !== Number(req.params.id));
 
-  saveData(foods);
-  res.status(204).send();
+// Update an existing food
+router.put("/:id", async (req, res) => {
+  const { name, unit, calories } = req.body;
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      "UPDATE foods SET name=$1, unit=$2, calories=$3 WHERE id=$4 RETURNING *",
+      [name, unit, parseFloat(calories), id]
+    );
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Delete a food
+router.delete("/:id", async (req, res) => {
+  try {
+    await pool.query("DELETE FROM foods WHERE id=$1", [req.params.id]);
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 module.exports = router;

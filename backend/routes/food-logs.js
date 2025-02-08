@@ -1,88 +1,87 @@
 const express = require("express");
-const fs = require("fs");
+const pool = require("../db");
+
 const router = express.Router();
 
-const CATS_FILE = "cats.json";
-const FOOD_LOGS_FILE = "foodLogs.json";
-
-const loadData = (file) => {
-  // try {
-    return JSON.parse(fs.readFileSync(file, "utf8"));
-  // } catch (error) {
-  //   return [];
-  // }
-};
-
-const saveData = (data) => {
-  fs.writeFileSync(FOOD_LOGS_FILE, JSON.stringify(data, null, 2));
-};
-
 // Get all food logs
-router.get("/", (req, res) => res.json(loadData(FOOD_LOGS_FILE)));
-
+router.get("/", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM food_logs");
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
 
 // Get past week's food logs grouped by cat and day
-router.get("/weekly/:catId", (req, res) => {
-  const foodLogs = loadData(FOOD_LOGS_FILE);
-  const cats = loadData(CATS_FILE);
+router.get("/weekly/:catId", async (req, res) => {
+  const catId = Number(req.params.catId);
 
-  const catId = req.params.catId;
-  const cat = cats.find((c) => `${c.id}` === catId);
-  if (!cat) return res.status(404).json({ error: "Cat not found" });
+  try {
+    const result = await pool.query(
+      `SELECT 
+          DATE(timestamp) AS date,
+          SUM(calories) AS total_calories,
+          (SELECT calorie_goal FROM cats WHERE id=$1) AS calorie_goal
+       FROM food_logs 
+       WHERE cat_id=$1 AND timestamp >= NOW() - INTERVAL '7 days' 
+       GROUP BY date 
+       ORDER BY date`,
+      [catId]
+    );
 
-  const today = new Date();
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(today.getDate() - 7);
-
-  const filteredLogs = foodLogs
-    .filter((log) => `${log.catId}` === catId && new Date(log.timestamp) >= oneWeekAgo)
-    .reduce((acc, log) => {
-      const date = (new Date(log.timestamp)).toLocaleDateString();
-      if (!acc[date]) acc[date] = { calories: 0, goal: cat.calorieGoal };
-      acc[date].calories += log.calories;
+    const formattedData = result.rows.reduce((acc, row) => {
+      acc[row.date] = { calories: row.total_calories, goal: row.calorie_goal };
       return acc;
     }, {});
 
-  res.json(filteredLogs);
+    res.json(formattedData);
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 // Add a new food log
-router.post("/", (req, res) => {
-  const logs = loadData(FOOD_LOGS_FILE);
-  const newLog = {
-    id: Date.now(),
-    catId: Number(req.body.catId),
-    foodId: Number(req.body.foodId),
-    quantity: parseFloat(req.body.quantity),
-    unit: req.body.unit,
-    calories: parseFloat(req.body.calories),
-    timestamp: new Date().toISOString(),
-  };
-  logs.push(newLog);
-  saveData(logs);
-  res.json(newLog);
+router.post("/", async (req, res) => {
+  const { catId, foodId, quantity, calories } = req.body;
+
+  try {
+    const result = await pool.query(
+      "INSERT INTO food_logs (cat_id, food_id, quantity, calories) VALUES ($1, $2, $3, $4) RETURNING *",
+      [catId, foodId, quantity, calories]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
 });
+
 
 // Update a food log
-router.put("/:id", (req, res) => {
-  const logs = loadData(FOOD_LOGS_FILE);
-  const logIndex = logs.findIndex((log) => log.id === Number(req.params.id));
+router.put("/:id", async (req, res) => {
+  const { catId, foodId, quantity, calories } = req.body;
+  const { id } = req.params;
 
-  if (logIndex === -1) return res.status(404).json({ error: "Log not found" });
+  try {
+    const query = "UPDATE cats SET cat_id=$1, food_id=$2, quantity=$3, calories=$4 WHERE id=$5 RETURNING *"
+    
+    const values = [catId, foodId, quantity, calories, id];
 
-  logs[logIndex] = { ...logs[logIndex], ...req.body };
-  saveData(logs);
-  res.json(logs[logIndex]);
+    const result = await pool.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
-
-// Delete food
-router.delete("/:id", (req, res) => {
-  let logs = loadData(FOOD_LOGS_FILE);
-  logs = logs.filter((log) => log.id !== Number(req.params.id));
-
-  saveData(logs);
-  res.status(204).send();
+// Delete a food log
+router.delete("/:id", async (req, res) => {
+  try {
+    await pool.query("DELETE FROM food_logs WHERE id=$1", [req.params.id]);
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 module.exports = router;
