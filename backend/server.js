@@ -5,7 +5,19 @@ const bodyParser = require("body-parser");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(cors());
+// Allow only the frontend's domain
+const allowedOrigins = [
+  "https://cat-track-frontend.onrender.com/", // Replace with your actual frontend URL
+  "http://localhost:5173" // Allow local development
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true, // Allows cookies & auth headers
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
