@@ -33,7 +33,7 @@ function FoodLogs() {
 
   // Get today's date in YYYY-MM-DD format
   const getTodayDate = () => {
-    return new Date().toLocaleDateString();
+    return new Date().toISOString();
   };
 
   // Apply filters when button is clicked
@@ -44,7 +44,7 @@ function FoodLogs() {
     setFilteredLogs(
       foodLogs.filter(
         (log) =>
-          (filters.cat === "" || log.catId === Number(filters.cat)) &&
+          (filters.cat === "" || log.cat_id === Number(filters.cat)) &&
           (filters.date === "" || log.timestamp.startsWith(dateFilter))
       )
     );
