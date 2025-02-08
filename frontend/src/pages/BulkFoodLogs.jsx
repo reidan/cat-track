@@ -16,15 +16,17 @@ function BulkFoodLogs() {
     // Fetch cats and foods for name-to-ID mapping
     const fetchData = async () => {
       try {
-        const catsRes = await fetchCats();
-        const foodsRes = await fetchFoods();
+        fetchCats().then((catData) => {
+          const catMap = Object.fromEntries(catData.map(cat => [cat.name.toUpperCase(), cat.id]));
+          console.log(JSON.stringify(catMap));
+          setCats(catMap);
+        });
+        fetchFoods().then((foodData) => {
+          const foodMap = Object.fromEntries(foodData.map(food => [food.name.toUpperCase(), food.id]));
+          console.log(JSON.stringify(foodMap));
+          setFoods(foodMap);
+        });
 
-        const catMap = Object.fromEntries(catsRes.data.map(cat => [cat.name.toUpperCase(), cat.id]));
-        const foodMap = Object.fromEntries(foodsRes.data.map(food => [food.name.toUpperCase(), food.id]));
-        console.log(JSON.stringify(catMap));
-        console.log(JSON.stringify(foodMap));
-        setCats(catMap);
-        setFoods(foodMap);
       } catch (error) {
         console.error("Failed to fetch lookup data:", error);
       }
