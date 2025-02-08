@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Cats from "./pages/Cats";
 import Food from "./pages/Food";
 import FoodLogs from "./pages/FoodLogs";
+import BulkFoodLogs from "./pages/BulkFoodLogs";
 
 function App() {
   return (
@@ -55,6 +56,16 @@ function App() {
           >
             📊 Food Log
           </NavLink>
+          <NavLink
+            to="/bulk"
+            className={({ isActive }) =>
+              `px-4 py-2 rounded-lg font-bold ${
+                isActive ? "bg-red-500 text-white" : "text-red-500 hover:bg-red-100"
+              }`
+            }
+          >
+            📊 BULK UPLOAD
+          </NavLink>
         </nav>
 
         {/* Define Routes */}
@@ -63,6 +74,7 @@ function App() {
           <Route path="/cats" element={<Cats />} />
           <Route path="/foods" element={<Food />} />
           <Route path="/food-log" element={<FoodLogs />} />
+          <Route path="/bulk" element={<BulkFoodLogs />} />
         </Routes>
       </div>
     </Router>

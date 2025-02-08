@@ -23,7 +23,7 @@ function Home() {
           caloriesEaten: values.calories, //.toFixed(0),
           calorieGoal: values.goal, //.toFixed(0),
         }));
-        console.log(typeof formattedData[0].calories);
+        console.log(typeof formattedData[0].caloriesEaten);
         setWeeklyData(formattedData);
       });
     }

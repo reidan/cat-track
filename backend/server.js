@@ -28,12 +28,14 @@ const catsRoutes = require("./routes/cats");
 const foodsRoutes = require("./routes/foods");
 const foodLogsRoutes = require("./routes/food-logs");
 const metricsRoutes = require("./routes/metrics");
+const bulkFoodLogsRoutes = require("./routes/bulk-food-logs");
 
 // Use routes
 app.use("/api/cats", catsRoutes);
 app.use("/api/foods", foodsRoutes);
 app.use("/api/food-logs", foodLogsRoutes);
 app.use("/api/metrics", metricsRoutes);
+app.use("/api/bulk-food-logs", bulkFoodLogsRoutes);
 
 // Serve uploaded images
 app.use("/uploads", express.static("uploads"));
