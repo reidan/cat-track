@@ -103,4 +103,18 @@ export const deleteFoodLog = async (foodLogId) => {
   await api.delete(`/food-logs/${foodLogId}`);
 };
 
+// METRICS
+
+// Fetch weekly food logs for a cat
+export const fetchWeeklyFoodLogs = async (catId) => {
+  const response = await api.get(`/metrics/weekly-stats/${catId}`);
+  return response.data;
+};
+
+// Fetch weekly food logs for a cat
+export const fetchDailySummary = async (catId) => {
+  const response = await api.get(`/metrics/daily-summary`);
+  return response.data;
+};
+
 export default api;
