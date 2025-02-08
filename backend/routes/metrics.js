@@ -56,6 +56,7 @@ router.get("/weekly-stats/:catId", async (req, res) => {
 
     res.json(formattedData);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Database error" });
   }
 });

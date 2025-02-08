@@ -26,15 +26,8 @@ function FoodLogs() {
     fetchCats().then((data) => { setCats(data) });
     const foods = fetchFoods().then((data) => { setFoods(data) });
     const foodLogs = fetchFoodLogs().then((data) => {
-      const logs = data.map((foodLog) => {
-        var foodLogDate = new Date(foodLog.timestamp);
-        foodLog.originalTimestamp = foodLog.timestamp;
-        foodLog.timestamp = `${foodLogDate.toLocaleDateString()} @ ${foodLogDate.toLocaleTimeString()}`;
-        return foodLog;
-      });
-      const sortedLogs = logs.sort((a, b) => b.timestamp > a.timestamp);
-      setFoodLogs(sortedLogs);
-      setFilteredLogs(sortedLogs); // Show all logs initially
+      setFoodLogs(data);
+      setFilteredLogs(data); // Show all logs initially
     });
   }, []);
 
@@ -113,12 +106,12 @@ function FoodLogs() {
         setFoodLogs([...foodLogs, data]);
       })
     } else {
-      const editedLog = {
-        ...editingLog,
-        timestamp: editingLog.originalTimestamp
-      };
-      delete editedLog.originalTimestamp;
-      updateFoodLog(editingLog.id, editedLog).then((data) => {
+      // const editedLog = {
+      //   ...editingLog,
+      //   timestamp: editingLog.originalTimestamp
+      // };
+      // delete editedLog.originalTimestamp;
+      updateFoodLog(editingLog.id, editingLog).then((data) => {
         setFoodLogs(foodLogs.map((log) => (log.id === editingLog.id ? editingLog : log)));
         applyFilters()
       });
@@ -202,8 +195,8 @@ function FoodLogs() {
           {filteredLogs.map((log) => (
             <tr key={log.id} className="border-t">
               <td className="px-4 py-2 text-center">{log.timestamp}</td>
-              <td className="px-4 py-2 text-center">{cats.find((cat) => cat.id === log.catId)?.name}</td>
-              <td className="px-4 py-2 text-center">{foods.find((food) => food.id === log.foodId)?.name || "Unknown"}</td>
+              <td className="px-4 py-2 text-center">{log.cat_name}</td>
+              <td className="px-4 py-2 text-center">{log.food_name}</td>
               <td className="px-4 py-2 text-center">{log.quantity} {log.unit}</td>
               <td className="px-4 py-2 text-center">{log.calories} kcal</td>
               <td className="px-4 py-2 text-center">

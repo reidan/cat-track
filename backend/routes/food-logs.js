@@ -3,10 +3,24 @@ const pool = require("../db");
 
 const router = express.Router();
 
+const QUERY_FOOD_LOGS = `
+  SELECT 
+    fl.timestamp AS timestamp,
+    c.name AS catName,
+    f.name AS foodName,
+    f.unit AS unit,
+    fl.quantity AS quantity,
+    fl.calories AS calories
+  FROM food_logs fl
+  INNER JOIN cats c ON c.id = fl.cat_id
+  INNER JOIN foods f ON f.id fl.food_id
+  ORDER BY fl.timestamp DESC
+`;
+
 // Get all food logs
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM food_logs");
+    const result = await pool.query(QUERY_FOOD_LOGS);
     res.json(result.rows);
   } catch (error) {
     res.status(500).json({ error: "Database error" });
