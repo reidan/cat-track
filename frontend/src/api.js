@@ -114,7 +114,7 @@ export const fetchDailySummary = async (catId) => {
 // BULK LOGS
 
 export const bulkUpdateLogs = async (data) => {
-  return await api.post(`${API_URL}/bulk-food-logs/upload`, validData, {
+  return await api.post(`${API_URL}/bulk-food-logs/upload`, data, {
     headers: { "Content-Type": "application/json" },
   });
 };
