@@ -49,7 +49,9 @@ function BulkFoodLogs() {
         return {
           ...entry,
           catId,
+          catName: entry.catId,
           foodId,
+          foodName: entry.foodId,
           valid: catId !== "Not Found" && foodId !== "Not Found",
         };
       });
@@ -102,18 +104,21 @@ function BulkFoodLogs() {
           <table className="w-full mt-2 border">
             <thead>
               <tr className="bg-gray-200">
+                <th className="border p-2">Index</th>
                 <th className="border p-2">Cat Name</th>
                 <th className="border p-2">Food Name</th>
                 <th className="border p-2">Quantity</th>
                 <th className="border p-2">Calories</th>
+                <th className="border p-2">Timestamp</th>
                 <th className="border p-2">Status</th>
               </tr>
             </thead>
             <tbody>
               {parsedData.map((entry, index) => (
                 <tr key={index} className={entry.valid ? "bg-green-100" : "bg-red-100"}>
-                  <td className="border p-2">{entry.catId !== "Not Found" ? entry.catId : "❌ " + entry.catId}</td>
-                  <td className="border p-2">{entry.foodId !== "Not Found" ? entry.foodId : "❌ " + entry.foodId}</td>
+                  <td className="border p-2">{index}</td>
+                  <td className="border p-2">{entry.catId !== "Not Found" ? `${entry.catId} (${entry.catName})` : "❌ " + entry.catId}</td>
+                  <td className="border p-2">{entry.foodId !== "Not Found" ? `${entry.foodId} (${entry.foodName})` : "❌ " + entry.foodId}</td>
                   <td className="border p-2">{entry.quantity} {entry.unit}</td>
                   <td className="border p-2">{entry.calories}</td>
                   <td className="border p-2">{entry.timestamp}</td>
