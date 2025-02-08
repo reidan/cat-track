@@ -74,12 +74,6 @@ export const deleteFood = async (foodId) => {
 
 // FOOD LOGSSSS
 
-// Fetch weekly food logs for a cat
-export const fetchWeeklyFoodLogs = async (catId) => {
-  const response = await api.get(`/food-logs/weekly/${catId}`);
-  return response.data;
-};
-
 // Fetch all food logs
 export const fetchFoodLogs = async () => {
   const response = await api.get("/food-logs");

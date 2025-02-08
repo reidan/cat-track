@@ -13,34 +13,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get past week's food logs grouped by cat and day
-router.get("/weekly/:catId", async (req, res) => {
-  const catId = Number(req.params.catId);
-
-  try {
-    const result = await pool.query(
-      `SELECT 
-          DATE(timestamp) AS date,
-          SUM(calories) AS total_calories,
-          (SELECT calorie_goal FROM cats WHERE id=$1) AS calorie_goal
-       FROM food_logs 
-       WHERE cat_id=$1 AND timestamp >= NOW() - INTERVAL '7 days' 
-       GROUP BY date 
-       ORDER BY date`,
-      [catId]
-    );
-
-    const formattedData = result.rows.reduce((acc, row) => {
-      acc[row.date] = { calories: row.total_calories, goal: row.calorie_goal };
-      return acc;
-    }, {});
-
-    res.json(formattedData);
-  } catch (error) {
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
 // Add a new food log
 router.post("/", async (req, res) => {
   const { catId, foodId, quantity, calories } = req.body;
