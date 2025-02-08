@@ -24,6 +24,7 @@ export default defineConfig(({ mode }) => {
           secure: true,
         },
         "/uploads": "http://localhost:8080",
+        historyApiFallback: true,
       },
     },
   };
