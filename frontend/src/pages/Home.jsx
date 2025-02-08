@@ -49,6 +49,7 @@ function Home() {
     <div className="w-full max-w-3xl text-center">
       <h2 className="text-3xl font-bold mt-6">Welcome to the Cat Tracker! 🐱</h2>
       <p className="mt-4 text-lg">Monitor your cats' daily food intake.</p>
+      <p className="mt-4 text-lg">API URL: {`${__API_URL__}`</p>
 
       {/* Daily Calorie Summary */}
       <h3 className="text-2xl font-bold mt-6">📊 Daily Food Summary ({getTodayDate()})</h3>
