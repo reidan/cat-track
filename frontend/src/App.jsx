@@ -56,7 +56,7 @@ function App() {
           >
             📊 Food Log
           </NavLink>
-          <NavLink
+          {/*<NavLink
             to="/bulk"
             className={({ isActive }) =>
               `px-4 py-2 rounded-lg font-bold ${
@@ -65,7 +65,7 @@ function App() {
             }
           >
             📊 BULK UPLOAD
-          </NavLink>
+          </NavLink>*/}
         </nav>
 
         {/* Define Routes */}
