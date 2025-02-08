@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { fetchCats, fetchFoodLogs, fetchWeeklyFoodLogs } from "../api";
+
 import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 function Home() {
@@ -9,23 +10,24 @@ function Home() {
   const [foodLogs, setFoodLogs] = useState([]);
 
   useEffect(() => {
-    axios.get("/api/cats").then((response) => {
-      setCats(response.data);
-      if (response.data.length > 0) setSelectedCat(response.data[0].id);
-    });
-    axios.get("/api/food-logs").then((response) => setFoodLogs(response.data));
+    const cats = fetchCats();
+    setCats(cats);
+    if (cats.length > 0) {
+      setSelectedCat(cats[0].id);
+    }
+    const foodLogs = fetchFoodLogs();
+    setFoodLogs(foodLogs);
   }, []);
 
   useEffect(() => {
     if (selectedCat) {
-      axios.get(`/api/food-logs/weekly/${selectedCat}`).then((response) => {
-        const formattedData = Object.entries(response.data).map(([date, values]) => ({
-          date,
-          caloriesEaten: values.calories.toFixed(0),
-          calorieGoal: values.goal.toFixed(0),
-        }));
-        setWeeklyData(formattedData);
-      });
+      const weeklyFoodLogs = fetchWeeklyFoodLogs(selectedCat);
+      const formattedData = Object.entries(weeklyFoodLogs).map(([date, values]) => ({
+        date,
+        caloriesEaten: values.calories.toFixed(0),
+        calorieGoal: values.goal.toFixed(0),
+      }));
+      setWeeklyData(formattedData);
     }
   }, [selectedCat]);
 

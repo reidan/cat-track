@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { fetchCats, addCat, updateCat, deleteCat } from "../api";
 
 function Cats() {
   const [cats, setCats] = useState([]);
@@ -7,7 +7,8 @@ function Cats() {
   const [editingCat, setEditingCat] = useState(null);
 
   useEffect(() => {
-    axios.get("/api/cats").then((response) => setCats(response.data));
+    const cats = fetchCats();
+    setCats(cats);
   }, []);
 
   const openModal = (cat = null) => {
@@ -31,14 +32,17 @@ function Cats() {
 
     let response;
     if (editingCat.id) {
-      response = await axios.put(`/api/cats/${editingCat.id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      response = updateCat(editingCat.id, formData);
+      // axios.put(`/api/cats/${editingCat.id}`, formData, {
+      //   headers: { "Content-Type": "multipart/form-data" },
+      // });
+
       setCats(cats.map((cat) => (cat.id === editingCat.id ? response.data : cat)));
     } else {
-      response = await axios.post("/api/cats", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      response = addCat(formData);
+      // axios.post("/api/cats", formData, {
+      //   headers: { "Content-Type": "multipart/form-data" },
+      // });
       setCats([...cats, response.data]);
     }
 
