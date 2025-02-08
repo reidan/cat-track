@@ -6,8 +6,8 @@ const router = express.Router();
 const QUERY_FOOD_LOGS = `
   SELECT 
     fl.timestamp AS timestamp,
-    c.name AS catName,
-    f.name AS foodName,
+    c.name AS cat_name,
+    f.name AS food_name,
     f.unit AS unit,
     fl.quantity AS quantity,
     fl.calories AS calories
