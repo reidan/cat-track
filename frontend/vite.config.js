@@ -15,7 +15,11 @@ export default defineConfig(({ mode }) => {
         'cat-track.onrender.com'
       ],
       proxy: {
-        "/api": API_URL,
+        "/api": {
+          target: API_URL,
+          changeOrigin: true,
+          secure: true,
+        },
         "/uploads": "http://localhost:8080",
       },
     },
