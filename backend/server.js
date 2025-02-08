@@ -14,10 +14,12 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: allowedOrigins,
-    credentials: true, // Allows cookies & auth headers
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // ✅ Allows cookies & auth headers
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ✅ Allow all necessary HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // ✅ Allow common headers
   })
 );
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -33,5 +35,8 @@ app.use("/api/food-logs", foodLogsRoutes);
 
 // Serve uploaded images
 app.use("/uploads", express.static("uploads"));
+
+// ✅ Handle preflight requests (for OPTIONS method)
+app.options("*", cors());
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
