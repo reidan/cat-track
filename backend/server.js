@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 8080;
 
 // Allow only the frontend's domain
 const allowedOrigins = [
-  "https://cat-track-frontend.onrender.com/", // Replace with your actual frontend URL
+  "https://cat-track-frontend.onrender.com", // Replace with your actual frontend URL
   "http://localhost:5173" // Allow local development
 ];
 
