@@ -20,8 +20,8 @@ function Home() {
       fetchWeeklyFoodLogs(selectedCat).then((data) => {
         const formattedData = Object.entries(data).map(([date, values]) => ({
           date,
-          caloriesEaten: values.calories.toFixed(0),
-          calorieGoal: values.goal.toFixed(0),
+          caloriesEaten: values.calories, //.toFixed(0),
+          calorieGoal: values.goal, //.toFixed(0),
         }));
         setWeeklyData(formattedData);
       });
@@ -66,14 +66,14 @@ function Home() {
                     className="w-16 h-16 object-cover rounded-full border"
                   />*/}
                   {cat.cat_name}</td>
-                <td className="px-4 py-2 text-center">{caloriesEaten.toFixed(0)} kcal</td>
+                <td className="px-4 py-2 text-center">{caloriesEaten} kcal</td>
                 <td className="px-4 py-2 text-center">{calorieGoal} kcal</td>
                 <td
                   className={`px-4 py-2 text-center font-bold ${
                     difference < -10 ? "text-red-500" : difference > 10 ? "text-red-500" : "text-gray-500"
                   }`}
                 >
-                  {difference.toFixed(2)} kcal
+                  {difference} kcal
                 </td>
                 <td className="px-4 py-2 text-center">
                   <div className="w-32 bg-gray-200 rounded-full h-4">
