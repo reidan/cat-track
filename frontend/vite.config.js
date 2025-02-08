@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
+  const API_URL = process.env.VITE_API_URL || "http://localhost:8080/api"; // Fallback for safety
   plugins: [
     react(),
     tailwindcss(),
@@ -10,9 +11,10 @@ export default defineConfig({
   server: {
     allowedHosts: [
       'ideal-brief-treefrog.ngrok-free.app',
+      'cat-track.onrender.com'
     ],
     proxy: {
-      "/api": "http://localhost:8080",
+      "/api": API_URL,
       "/uploads": "http://localhost:8080",
     },
   },
