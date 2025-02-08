@@ -205,7 +205,7 @@ function FoodLogs() {
               <td className="px-4 py-2 text-center">{cats.find((cat) => cat.id === log.catId)?.name}</td>
               <td className="px-4 py-2 text-center">{foods.find((food) => food.id === log.foodId)?.name || "Unknown"}</td>
               <td className="px-4 py-2 text-center">{log.quantity} {log.unit}</td>
-              <td className="px-4 py-2 text-center">{log.calories.toFixed(2)} kcal</td>
+              <td className="px-4 py-2 text-center">{log.calories} kcal</td>
               <td className="px-4 py-2 text-center">
                 <button onClick={() => openEditModal(log)} className="text-blue-500 font-bold hover:underline">✏️ Edit</button>
                 <button onClick={() => deleteLog(log.id)} className="text-red-500 font-bold hover:underline ml-2">🗑️ Delete</button>
