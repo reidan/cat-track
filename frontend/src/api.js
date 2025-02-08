@@ -11,11 +11,11 @@ const api = axios.create({
 // Fetch all cats
 export const fetchCats = async () => {
   const response = await api.get("/cats");
-  response.map(({calorie_goal, ...cat}) => {
+  const cats = response.data.map(({calorie_goal, ...cat}) => {
     ...cat,
     calorieGoal: calorie_goal,
   })
-  return response.data;
+  return cats;
 };
 
 // Add a new cat
@@ -44,7 +44,11 @@ export const deleteCat = async (catId) => {
 // Fetch all foods
 export const fetchFoods = async () => {
   const response = await api.get("/foods");
-  return response.data;
+  const foods = response.data.map(({calories_per_unit, ...food}) => {
+    ...food,
+    calories: calories_per_unit,
+  })
+  return foods;
 };
 
 // Add a new food

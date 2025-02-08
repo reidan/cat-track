@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
 
   try {
     const result = await pool.query(
-      "INSERT INTO foods (name, unit, calories) VALUES ($1, $2, $3) RETURNING *",
+      "INSERT INTO foods (name, unit, calories_per_unit) VALUES ($1, $2, $3) RETURNING *",
       [name, unit, parseFloat(calories)]
     );
     res.status(201).json(result.rows[0]);
@@ -36,7 +36,7 @@ router.put("/:id", async (req, res) => {
 
   try {
     const result = await pool.query(
-      "UPDATE foods SET name=$1, unit=$2, calories=$3 WHERE id=$4 RETURNING *",
+      "UPDATE foods SET name=$1, unit=$2, calories_per_unit=$3 WHERE id=$4 RETURNING *",
       [name, unit, parseFloat(calories), id]
     );
     res.json(result.rows[0]);
