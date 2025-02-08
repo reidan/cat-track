@@ -3,11 +3,16 @@ const pool = require("../db");
 
 const router = express.Router();
 
+const USER_TIMEZONE = "America/Vancouver";
+
+
 const QUERY_FOOD_LOGS = `
   SELECT 
-    fl.timestamp AS timestamp,
+    (fl.timestamp AT TIME ZONE 'America/Vancouver') AS timestamp,
     c.name AS cat_name,
+    c.id AS cat_id,
     f.name AS food_name,
+    f.id AS food_id,
     f.unit AS unit,
     fl.quantity AS quantity,
     fl.calories AS calories
