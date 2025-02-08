@@ -1,4 +1,13 @@
 import { useEffect, useState } from "react";
+import {
+  fetchFoods,
+  fetchCats,
+  fetchFoodLogs,
+  addFoodLog,
+  updateFoodLog,
+  deleteFoodLog
+} from "../api";
+
 import axios from "axios";
 
 function FoodLogs() {
@@ -14,10 +23,10 @@ function FoodLogs() {
   const [filteredLogs, setFilteredLogs] = useState([]);
 
   useEffect(() => {
-    axios.get("/api/cats").then((response) => setCats(response.data));
-    axios.get("/api/foods").then((response) => setFoods(response.data));
-    axios.get("/api/food-logs").then((response) => {
-      const logs = response.data.map((foodLog) => {
+    fetchCats().then((data) => { setCats(data) });
+    const foods = fetchFoods().then((data) => { setFoods(data) });
+    const foodLogs = fetchFoodLogs().then((data) => {
+      const logs = data.map((foodLog) => {
         var foodLogDate = new Date(foodLog.timestamp);
         foodLog.originalTimestamp = foodLog.timestamp;
         foodLog.timestamp = `${foodLogDate.toLocaleDateString()} @ ${foodLogDate.toLocaleTimeString()}`;
@@ -97,20 +106,22 @@ function FoodLogs() {
 
     let response;
     if (isAdding) {
-      response = await axios.post("/api/food-logs", {
+      addFoodLog({
         ...editingLog,
         timestamp: new Date().toISOString(),
-      });
-      setFoodLogs([...foodLogs, response.data]);
+      }).then((data) => {
+        setFoodLogs([...foodLogs, data]);
+      })
     } else {
       const editedLog = {
         ...editingLog,
         timestamp: editingLog.originalTimestamp
       };
       delete editedLog.originalTimestamp;
-      await axios.put(`/api/food-logs/${editingLog.id}`, editedLog);
-      setFoodLogs(foodLogs.map((log) => (log.id === editingLog.id ? editingLog : log)));
-      applyFilters()
+      updateFoodLog(editingLog.id, editedLog).then((data) => {
+        setFoodLogs(foodLogs.map((log) => (log.id === editingLog.id ? editingLog : log)));
+        applyFilters()
+      });
     }
 
     if (addMore) {
@@ -124,9 +135,10 @@ function FoodLogs() {
 
   // Delete food log
   const deleteLog = async (id) => {
-    await axios.delete(`/api/food-logs/${id}`);
-    setFoodLogs(foodLogs.filter((log) => log.id !== id));
-    applyFilters();
+    deleteFoodLog(id).then((data) => {
+      setFoodLogs(foodLogs.filter((log) => log.id !== id));
+      applyFilters();
+    });
   };
 
   return (

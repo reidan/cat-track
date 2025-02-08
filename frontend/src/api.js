@@ -11,6 +11,10 @@ const api = axios.create({
 // Fetch all cats
 export const fetchCats = async () => {
   const response = await api.get("/cats");
+  response.map(({calorie_goal, ...cat}) => {
+    ...cat,
+    calorieGoal: calorie_goal,
+  })
   return response.data;
 };
 
