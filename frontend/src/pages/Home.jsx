@@ -10,24 +10,25 @@ function Home() {
   const [foodLogs, setFoodLogs] = useState([]);
 
   useEffect(() => {
-    const cats = fetchCats();
-    setCats(cats);
-    if (cats.length > 0) {
-      setSelectedCat(cats[0].id);
-    }
-    const foodLogs = fetchFoodLogs();
-    setFoodLogs(foodLogs);
+    fetchCats().then((data) => {
+      setCats(data);
+      if (data.length > 0) setSelectedCat(data[0].id);
+    });
+    fetchFoodLogs().then((data) => {
+      setFoodLogs(data);
+    })
   }, []);
 
   useEffect(() => {
     if (selectedCat) {
-      const weeklyFoodLogs = fetchWeeklyFoodLogs(selectedCat);
-      const formattedData = Object.entries(weeklyFoodLogs).map(([date, values]) => ({
-        date,
-        caloriesEaten: values.calories.toFixed(0),
-        calorieGoal: values.goal.toFixed(0),
-      }));
-      setWeeklyData(formattedData);
+      fetchWeeklyFoodLogs(selectedCat).then((data) => {
+        const formattedData = Object.entries(data).map(([date, values]) => ({
+          date,
+          caloriesEaten: values.calories.toFixed(0),
+          calorieGoal: values.goal.toFixed(0),
+        }));
+        setWeeklyData(formattedData);
+      });
     }
   }, [selectedCat]);
 
@@ -64,7 +65,7 @@ function Home() {
           </tr>
         </thead>
         <tbody>
-          {cats.map((cat) => {
+          {cats?.map((cat) => {
             const caloriesEaten = getCatCalories(cat.id);
             const calorieGoal = cat.calorieGoal || 0;
             const difference = caloriesEaten - calorieGoal;

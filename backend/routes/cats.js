@@ -31,6 +31,7 @@ router.get("/", async (req, res) => {
     const result = await pool.query("SELECT * FROM cats");
     res.json(result.rows);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Database error" });
   }
 });
@@ -47,6 +48,7 @@ router.post("/", upload.single("photo"), async (req, res) => {
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Database error" });
   }
 });

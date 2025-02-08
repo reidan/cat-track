@@ -6,21 +6,11 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
+//  CATSSSSSS
+
 // Fetch all cats
 export const fetchCats = async () => {
   const response = await api.get("/cats");
-  return response.data;
-};
-
-// Fetch weekly food logs for a cat
-export const fetchWeeklyFoodLogs = async (catId) => {
-  const response = await api.get(`/food-logs/weekly/${catId}`);
-  return response.data;
-};
-
-// Fetch all foods
-export const fetchFoods = async () => {
-  const response = await api.get("/foods");
   return response.data;
 };
 
@@ -40,21 +30,65 @@ export const updateCat = async (catId, formData) => {
   return response.data;
 };
 
-// Add a new food log
-export const addFoodLog = async (foodLog) => {
-  const response = await api.post("/food-logs", foodLog);
+// Delete a cat
+export const deleteCat = async (catId) => {
+  await api.delete(`/cats/${catId}`);
+};
+
+//  FOOOOOODS
+
+// Fetch all foods
+export const fetchFoods = async () => {
+  const response = await api.get("/foods");
   return response.data;
 };
 
-// Delete a food log
-export const deleteFoodLog = async (foodLogId) => {
-  await api.delete(`/food-logs/${foodLogId}`);
+// Add a new food
+export const addFood = async (formData) => {
+  const response = await api.post("/foods", formData);
+  return response.data;
+};
+
+// Edit a food
+export const putFood = async (foodId, formData) => {
+  const response = await api.put(`/foods/${foodId}`, formData);
+  return response.data;
+};
+
+// Delete a food
+export const deleteFood = async (foodId) => {
+  await api.delete(`/foods/${foodId}`);
+};
+
+// FOOD LOGSSSS
+
+// Fetch weekly food logs for a cat
+export const fetchWeeklyFoodLogs = async (catId) => {
+  const response = await api.get(`/food-logs/weekly/${catId}`);
+  return response.data;
 };
 
 // Fetch all food logs
 export const fetchFoodLogs = async () => {
   const response = await api.get("/food-logs");
   return response.data;
+};
+
+// Add a new food log
+export const addFoodLog = async (foodLog) => {
+  const response = await api.post("/food-logs", foodLog);
+  return response.data;
+};
+
+// Edit a food
+export const updateFoodLog = async (foodLogId, formData) => {
+  const response = await api.put(`/food-logs/${foodLogId}`, formData);
+  return response.data;
+};
+
+// Delete a food log
+export const deleteFoodLog = async (foodLogId) => {
+  await api.delete(`/food-logs/${foodLogId}`);
 };
 
 export default api;
