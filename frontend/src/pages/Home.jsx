@@ -100,9 +100,9 @@ function Home() {
           value={selectedCat || ""}
           onChange={(e) => setSelectedCat(Number(e.target.value))}
         >
-          {cats.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
+          {dailySummaries.map((cat) => (
+            <option key={cat.cat_id} value={cat.cat_id}>
+              {cat.cat_name}
             </option>
           ))}
         </select>
