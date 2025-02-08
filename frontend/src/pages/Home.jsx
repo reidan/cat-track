@@ -23,6 +23,7 @@ function Home() {
           caloriesEaten: values.calories, //.toFixed(0),
           calorieGoal: values.goal, //.toFixed(0),
         }));
+        console.log(typeof formattedData[0].calories);
         setWeeklyData(formattedData);
       });
     }
@@ -113,10 +114,10 @@ function Home() {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="total_calories" fill="#4A90E2" name="Calories Eaten" />
+            <Bar dataKey="calories" fill="#4A90E2" name="Calories Eaten" />
 
             {/*<ReferenceLine y={cats.filter((c) => c.id === selectedCat)[0]?.calorieGoal} label="Calorie Goal" stroke="black" strokeDasharray="3 3" />*/}
-            <Line type="monotone" dataKey="calorie_goal" stroke="#000000" name="Calorie Goal" />
+            <Line type="monotone" dataKey="goal" stroke="#000000" name="Calorie Goal" />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
