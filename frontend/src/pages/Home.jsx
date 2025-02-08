@@ -67,7 +67,7 @@ function Home() {
                   />*/}
                   {cat.cat_name}</td>
                 <td className="px-4 py-2 text-center">{caloriesEaten.toFixed(0)} kcal</td>
-                <td className="px-4 py-2 text-center">{calorieGoal.toFixed(0)} kcal</td>
+                <td className="px-4 py-2 text-center">{calorieGoal} kcal</td>
                 <td
                   className={`px-4 py-2 text-center font-bold ${
                     difference < -10 ? "text-red-500" : difference > 10 ? "text-red-500" : "text-gray-500"
