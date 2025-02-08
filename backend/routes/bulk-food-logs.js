@@ -12,8 +12,8 @@ router.post("/upload", async (req, res) => {
 
     const values = foodLogs
       .filter((log) => log.valid)
-      .map(({ catId, foodId, quantity, unit, calories, timestamp }) =>
-        `(${catId}, ${foodId}, ${quantity}, '${unit}', ${calories}, '${timestamp}')`
+      .map(({ catId, foodId, quantity, calories, timestamp }) =>
+        `(${catId}, ${foodId}, ${quantity}, ${calories}, '${timestamp}')`
       )
       .join(",");
 
@@ -22,7 +22,7 @@ router.post("/upload", async (req, res) => {
     }
 
     const query = `
-      INSERT INTO food_logs (cat_id, food_id, quantity, unit, calories, timestamp)
+      INSERT INTO food_logs (cat_id, food_id, quantity, calories, timestamp)
       VALUES ${values} RETURNING *;
     `;
 

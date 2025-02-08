@@ -21,7 +21,8 @@ function BulkFoodLogs() {
 
         const catMap = Object.fromEntries(catsRes.data.map(cat => [cat.name.toUpperCase(), cat.id]));
         const foodMap = Object.fromEntries(foodsRes.data.map(food => [food.name.toUpperCase(), food.id]));
-
+        console.log(JSON.stringify(catMap));
+        console.log(JSON.stringify(foodMap));
         setCats(catMap);
         setFoods(foodMap);
       } catch (error) {
@@ -113,6 +114,7 @@ function BulkFoodLogs() {
                   <td className="border p-2">{entry.foodId !== "Not Found" ? entry.foodId : "❌ " + entry.foodId}</td>
                   <td className="border p-2">{entry.quantity} {entry.unit}</td>
                   <td className="border p-2">{entry.calories}</td>
+                  <td className="border p-2">{entry.timestamp}</td>
                   <td className="border p-2">{entry.valid ? "✅ Valid" : "❌ Missing ID"}</td>
                 </tr>
               ))}
