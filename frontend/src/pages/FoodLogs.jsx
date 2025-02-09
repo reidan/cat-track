@@ -112,7 +112,7 @@ function FoodLogs() {
         setFoodLogs([...foodLogs, data]);
       })
     } else {
-      updateFoodLog(editingLog.id, editingLog).then((data) => {
+      updateFoodLog(editingLog.food_log_id, editingLog).then((data) => {
         setFoodLogs(foodLogs.map((log) => (log.id === editingLog.id ? editingLog : log)));
         applyFilters()
       });
@@ -195,7 +195,7 @@ function FoodLogs() {
         </thead>
         <tbody>
           {filteredLogs.map((log) => (
-            <tr key={log.id} className="border-t">
+            <tr key={log.food_log_id} className="border-t">
               <td className="px-4 py-2 text-center">{log.timestamp}</td>
               <td className="px-4 py-2 text-center">{log.cat_name}</td>
               <td className="px-4 py-2 text-center">{log.food_name}</td>
@@ -203,7 +203,7 @@ function FoodLogs() {
               <td className="px-4 py-2 text-center">{log.calories} kcal</td>
               <td className="px-4 py-2 text-center">
                 <button onClick={() => openEditModal(log)} className="text-blue-500 font-bold hover:underline">✏️ Edit</button>
-                <button onClick={() => deleteLog(log.id)} className="text-red-500 font-bold hover:underline ml-2">🗑️ Delete</button>
+                <button onClick={() => deleteLog(log.food_log_id)} className="text-red-500 font-bold hover:underline ml-2">🗑️ Delete</button>
               </td>
             </tr>
           ))}

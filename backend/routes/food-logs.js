@@ -8,6 +8,7 @@ const USER_TIMEZONE = "America/Vancouver";
 
 const QUERY_FOOD_LOGS = `
   SELECT 
+    fl.id AS food_log_id,
     (fl.timestamp AT TIME ZONE 'America/Vancouver') AS timestamp,
     c.name AS cat_name,
     c.id AS cat_id,
