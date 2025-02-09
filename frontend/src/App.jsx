@@ -6,67 +6,32 @@ import FoodLogs from "./pages/FoodLogs";
 import BulkFoodLogs from "./pages/BulkFoodLogs";
 
 function App() {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col items-center bg-gray-100 p-4">
-        <h1 className="text-3xl font-bold mb-4">🐱 Cat Tracker</h1>
+     <Router>
+      <div className="flex flex-col min-h-screen">
+        {/* Navbar */}
+        <nav className="bg-green-700 text-white p-4">
+          <div className="flex justify-between items-center">
+            <h1 className="text-lg md:text-2xl font-bold">🐱 Cat Tracker</h1>
+            {/* Mobile Menu Button */}
+            <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+              ☰
+            </button>
+          </div>
 
-        {/* Navigation Menu */}
-        <nav className="mb-6 space-x-4">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `px-4 py-2 rounded-lg font-bold ${
-                isActive ? "bg-blue-500 text-white" : "text-blue-500 hover:bg-blue-100"
-              }`
-            }
-          >
-            🏠 Home
-          </NavLink>
-
-          <NavLink
-            to="/cats"
-            className={({ isActive }) =>
-              `px-4 py-2 rounded-lg font-bold ${
-                isActive ? "bg-green-500 text-white" : "text-green-500 hover:bg-green-100"
-              }`
-            }
-          >
-            🐱 Cats
-          </NavLink>
-
-          <NavLink
-            to="/foods"
-            className={({ isActive }) =>
-              `px-4 py-2 rounded-lg font-bold ${
-                isActive ? "bg-orange-500 text-white" : "text-orange-500 hover:bg-orange-100"
-              }`
-            }
-          >
-            🍽️ Foods
-          </NavLink>
-
-          <NavLink
-            to="/food-log"
-            className={({ isActive }) =>
-              `px-4 py-2 rounded-lg font-bold ${
-                isActive ? "bg-red-500 text-white" : "text-red-500 hover:bg-red-100"
-              }`
-            }
-          >
-            📊 Food Log
-          </NavLink>
-          {/*<NavLink
-            to="/bulk"
-            className={({ isActive }) =>
-              `px-4 py-2 rounded-lg font-bold ${
-                isActive ? "bg-red-500 text-white" : "text-red-500 hover:bg-red-100"
-              }`
-            }
-          >
-            📊 BULK UPLOAD
-          </NavLink>*/}
+          {/* Navigation Links */}
+          <div className={`md:flex ${isOpen ? "block" : "hidden"}`}>
+            <NavLink to="/" className={({ isActive }) => `block p-2 ${isActive ? "bg-green-900" : ""}`}>🏠 Home</NavLink>
+            <NavLink to="/cats" className={({ isActive }) => `block p-2 ${isActive ? "bg-green-900" : ""}`}>🐱 Cats</NavLink>
+            <NavLink to="/foods" className={({ isActive }) => `block p-2 ${isActive ? "bg-green-900" : ""}`}>🍽️ Foods</NavLink>
+            <NavLink to="/food-log" className={({ isActive }) => `block p-2 ${isActive ? "bg-green-900" : ""}`}>📊 Food Log</NavLink>
+            {/*<NavLink to="/bulk" className={({ isActive }) => `block p-2 ${isActive ? "bg-green-900" : ""}`}>Bulk Upload</NavLink>*/}
+          </div>
         </nav>
+
+        {/* Page Content */}
+        <main className="flex-grow p-4">
 
         {/* Define Routes */}
         <Routes>
