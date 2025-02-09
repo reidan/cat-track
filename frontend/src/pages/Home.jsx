@@ -65,7 +65,7 @@ function Home() {
           {cats.map((cat) => {
             const summary = dailySummaries[cat.id];
             const caloriesEaten = summary?.total_calories || 0; //.toFixed(0);
-            const calorieGoal = cat.calorie_goal || 0;
+            const calorieGoal = cat.calorieGoal || 0;
             const difference = caloriesEaten - calorieGoal;
             const progress = calorieGoal > 0 ? (caloriesEaten / calorieGoal) * 100 : 0;
 
@@ -113,8 +113,8 @@ function Home() {
           onChange={(e) => setSelectedCat(Number(e.target.value))}
         >
           {cats.map((cat) => (
-            <option key={cat.cat_id} value={cat.cat_id}>
-              {cat.cat_name}
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
             </option>
           ))}
         </select>
