@@ -50,8 +50,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/cats" element={<Cats />} />
-            <Route path="/foods" element={<Foods />} />
-            <Route path="/bulk-upload" element={<BulkUpload />} />
+            <Route path="/foods" element={<Food />} />
+            <Route path="/food-log" element={<FoodLogs />} />
+            <Route path="/bulk" element={<BulkFoodLogs />} />
           </Routes>
         </main>
       </div>
