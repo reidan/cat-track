@@ -9,9 +9,7 @@ const USER_TIMEZONE = "America/Vancouver";
 const QUERY_DAILY_SUMMARY = `
   SELECT 
     c.id AS cat_id,
-    c.name AS cat_name,
-    SUM(f.calories) AS total_calories,
-    c.calorie_goal AS calorie_goal
+    SUM(f.calories) AS total_calories
   FROM food_logs f
   JOIN cats c ON f.cat_id = c.id
   WHERE DATE(f.timestamp AT TIME ZONE $1) = CURRENT_DATE

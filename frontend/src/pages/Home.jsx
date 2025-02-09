@@ -1,17 +1,27 @@
 import { useEffect, useState } from "react";
-import { fetchWeeklyFoodLogs, fetchDailySummary } from "../api";
+import { fetchCats, fetchWeeklyFoodLogs, fetchDailySummary } from "../api";
 
 import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 function Home() {
+  const [cats, setCats] = useState([]);
   const [dailySummaries, setDailySummaries] = useState([]);
   const [selectedCat, setSelectedCat] = useState(null);
   const [weeklyData, setWeeklyData] = useState([]);
 
   useEffect(() => {
+    fetchCats().then((data) => { 
+      setCats(data); 
+      if (data.length > 0) {
+        setSelectedCat(data[0].id);
+      }
+    });
     fetchDailySummary().then((data) => {
-      setDailySummaries(data);
-      if (data.length > 0) setSelectedCat(data[0].cat_id);
+      const catToDailySummary = {};
+      data.map((summary) => {
+        catToDailySummary[summary.cat_id] = summary;
+      });
+      setDailySummaries(catToDailySummary);
     });
   }, []);
 
@@ -52,21 +62,22 @@ function Home() {
           </tr>
         </thead>
         <tbody>
-          {dailySummaries.map((cat) => {
-            const caloriesEaten = cat.total_calories; //.toFixed(0);
+          {cats.map((cat) => {
+            const summary = dailySummaries[cat.id];
+            const caloriesEaten = summary?.total_calories || 0; //.toFixed(0);
             const calorieGoal = cat.calorie_goal || 0;
             const difference = caloriesEaten - calorieGoal;
             const progress = calorieGoal > 0 ? (caloriesEaten / calorieGoal) * 100 : 0;
 
             return (
-              <tr key={cat.cat_id} className="border-t">
+              <tr key={cat.id} className="border-t">
                 <td className="px-4 py-2 text-center">
                   {/*<img
                     src={cat.photo}
                     alt={cat.name}
                     className="w-16 h-16 object-cover rounded-full border"
                   />*/}
-                  {cat.cat_name}</td>
+                  {cat.name}</td>
                 <td className="px-4 py-2 text-center">{caloriesEaten} kcal</td>
                 <td className="px-4 py-2 text-center">{calorieGoal} kcal</td>
                 <td
@@ -101,7 +112,7 @@ function Home() {
           value={selectedCat || ""}
           onChange={(e) => setSelectedCat(Number(e.target.value))}
         >
-          {dailySummaries.map((cat) => (
+          {cats.map((cat) => (
             <option key={cat.cat_id} value={cat.cat_id}>
               {cat.cat_name}
             </option>
