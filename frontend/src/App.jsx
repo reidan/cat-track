@@ -13,7 +13,7 @@ function App() {
      <Router>
       <div className="flex flex-col min-h-screen">
         {/* Navbar */}
-        <nav className="bg-green-700 text-white p-4">
+        <nav className="bg-blue-500 text-white p-4">
           <div className="flex justify-between items-center">
             <h1 className="text-lg md:text-2xl font-bold">🐱 Cat Tracker</h1>
             {/* Mobile Menu Button */}
@@ -24,11 +24,11 @@ function App() {
 
           {/* Navigation Links */}
           <div className={`md:flex ${isOpen ? "block" : "hidden"}`}>
-            <NavLink to="/" className={({ isActive }) => `block p-2 ${isActive ? "bg-green-900" : ""}`}>🏠 Home</NavLink>
-            <NavLink to="/cats" className={({ isActive }) => `block p-2 ${isActive ? "bg-green-900" : ""}`}>🐱 Cats</NavLink>
-            <NavLink to="/foods" className={({ isActive }) => `block p-2 ${isActive ? "bg-green-900" : ""}`}>🍽️ Foods</NavLink>
-            <NavLink to="/food-log" className={({ isActive }) => `block p-2 ${isActive ? "bg-green-900" : ""}`}>📊 Food Log</NavLink>
-            {/*<NavLink to="/bulk" className={({ isActive }) => `block p-2 ${isActive ? "bg-green-900" : ""}`}>Bulk Upload</NavLink>*/}
+            <NavLink to="/" onClick={() => setIsOpen(!isOpen) className={({ isActive }) => `block p-2 ${isActive ? "bg-black" : ""}`}>🏠 Home</NavLink>
+            <NavLink to="/cats" onClick={() => setIsOpen(!isOpen) className={({ isActive }) => `block p-2 ${isActive ? "bg-black" : ""}`}>🐱 Cats</NavLink>
+            <NavLink to="/foods" onClick={() => setIsOpen(!isOpen) className={({ isActive }) => `block p-2 ${isActive ? "bg-black" : ""}`}>🍽️ Foods</NavLink>
+            <NavLink to="/food-log" onClick={() => setIsOpen(!isOpen) className={({ isActive }) => `block p-2 ${isActive ? "bg-black" : ""}`}>📊 Food Log</NavLink>
+            {/*<NavLink to="/bulk" onClick={() => setIsOpen(!isOpen) className={({ isActive }) => `block p-2 ${isActive ? "bg-black" : ""}`}>Bulk Upload</NavLink>*/}
           </div>
         </nav>
 
