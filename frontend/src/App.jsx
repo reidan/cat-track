@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes, NavLink } from "react-router-dom";
+import { useState } from "react";
 import Home from "./pages/Home";
 import Cats from "./pages/Cats";
 import Food from "./pages/Food";
@@ -7,6 +8,7 @@ import BulkFoodLogs from "./pages/BulkFoodLogs";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
+  
   return (
      <Router>
       <div className="flex flex-col min-h-screen">
