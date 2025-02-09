@@ -63,6 +63,7 @@ function FoodLogs() {
 
   // Open modal for editing an existing log
   const openEditModal = ({cat_id, food_id, ...log}) => {
+    console.log(`DELETE THIS: ${log} + ${cat_id} + ${food_id}`);
     setIsAdding(false);
     setEditingLog({
       ...log,
@@ -128,6 +129,7 @@ function FoodLogs() {
 
   // Delete food log
   const deleteLog = async (id) => {
+    console.log(`DELETE THIS: ${id}`);
     deleteFoodLog(id).then((data) => {
       setFoodLogs(foodLogs.filter((log) => log.id !== id));
       applyFilters();

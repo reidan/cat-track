@@ -54,6 +54,7 @@ router.put("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
+    const foodLogId = parseInt(id);
     const query = "UPDATE cats SET cat_id=$1, food_id=$2, quantity=$3, calories=$4 WHERE id=$5 RETURNING *"
     
     const values = [catId, foodId, quantity, calories, id];
@@ -69,7 +70,8 @@ router.put("/:id", async (req, res) => {
 // Delete a food log
 router.delete("/:id", async (req, res) => {
   try {
-    await pool.query("DELETE FROM food_logs WHERE id=$1", [req.params.id]);
+    const foodLogId = parseInt(req.params.id);
+    await pool.query("DELETE FROM food_logs WHERE id=$1", [foodLogId]);
     res.status(204).send();
   } catch (error) {
     console.log(error)
