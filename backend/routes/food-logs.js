@@ -56,7 +56,7 @@ router.put("/:id", async (req, res) => {
 
   try {
     const foodLogId = parseInt(id);
-    const query = "UPDATE cats SET cat_id=$1, food_id=$2, quantity=$3, calories=$4 WHERE id=$5 RETURNING *"
+    const query = "UPDATE food_logs SET cat_id=$1, food_id=$2, quantity=$3, calories=$4 WHERE id=$5 RETURNING *"
     
     const values = [catId, foodId, quantity, calories, id];
 
