@@ -61,6 +61,7 @@ router.put("/:id", async (req, res) => {
     const result = await pool.query(query, values);
     res.json(result.rows[0]);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Database error" });
   }
 });
@@ -71,6 +72,7 @@ router.delete("/:id", async (req, res) => {
     await pool.query("DELETE FROM food_logs WHERE id=$1", [req.params.id]);
     res.status(204).send();
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Database error" });
   }
 });

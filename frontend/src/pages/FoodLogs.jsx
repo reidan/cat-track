@@ -33,7 +33,7 @@ function FoodLogs() {
 
   // Get today's date in YYYY-MM-DD format
   const getTodayDate = () => {
-    return new Date().toISOString();
+    return new Date().toLocaleDateString();
   };
 
   // Apply filters when button is clicked
@@ -62,9 +62,13 @@ function FoodLogs() {
   };
 
   // Open modal for editing an existing log
-  const openEditModal = (log) => {
+  const openEditModal = ({cat_id, food_id, ...log}) => {
     setIsAdding(false);
-    setEditingLog(log);
+    setEditingLog({
+      ...log,
+      catId: cat_id,
+      foodId, food_id,
+    });
     setIsModalOpen(true);
   };
 
@@ -107,11 +111,6 @@ function FoodLogs() {
         setFoodLogs([...foodLogs, data]);
       })
     } else {
-      // const editedLog = {
-      //   ...editingLog,
-      //   timestamp: editingLog.originalTimestamp
-      // };
-      // delete editedLog.originalTimestamp;
       updateFoodLog(editingLog.id, editingLog).then((data) => {
         setFoodLogs(foodLogs.map((log) => (log.id === editingLog.id ? editingLog : log)));
         applyFilters()
