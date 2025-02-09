@@ -102,7 +102,7 @@ function Home() {
           })}
         </tbody>
       </table>
-      <div className="w-full max-w-3xl text-center">
+      <div className="w-full max-w-4xl mx-auto p-4 md:p-6">
         <h2 className="text-3xl font-bold mt-6">📊 Weekly Food Summary</h2>
 
         {/* Cat Selector */}
