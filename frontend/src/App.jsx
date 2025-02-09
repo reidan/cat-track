@@ -8,7 +8,7 @@ import BulkFoodLogs from "./pages/BulkFoodLogs";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   return (
      <Router>
       <div className="flex flex-col min-h-screen">
@@ -33,16 +33,27 @@ function App() {
         </nav>
 
         {/* Page Content */}
-        <main className="flex-grow p-4">
+        {/*<main className="flex-grow p-4">*/}
 
         {/* Define Routes */}
-        <Routes>
+        {/*<Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cats" element={<Cats />} />
           <Route path="/foods" element={<Food />} />
           <Route path="/food-log" element={<FoodLogs />} />
           <Route path="/bulk" element={<BulkFoodLogs />} />
         </Routes>
+      </div>*/}
+
+      {/* Page Content */}
+        <main className="flex-grow p-4">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/cats" element={<Cats />} />
+            <Route path="/foods" element={<Foods />} />
+            <Route path="/bulk-upload" element={<BulkUpload />} />
+          </Routes>
+        </main>
       </div>
     </Router>
   );
