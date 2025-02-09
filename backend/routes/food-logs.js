@@ -11,9 +11,9 @@ const QUERY_FOOD_LOGS = `
     fl.id AS food_log_id,
     (fl.timestamp AT TIME ZONE 'America/Vancouver') AS timestamp,
     c.name AS cat_name,
-    c.id AS cat_id,
+    fl.cat_id AS cat_id,
     f.name AS food_name,
-    f.id AS food_id,
+    fl.food_id AS food_id,
     f.unit AS unit,
     fl.quantity AS quantity,
     fl.calories AS calories

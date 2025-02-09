@@ -63,12 +63,12 @@ function FoodLogs() {
 
   // Open modal for editing an existing log
   const openEditModal = ({cat_id, food_id, ...log}) => {
-    console.log(`DELETE THIS: ${JSON.stringify(log, null, 2)} + ${cat_id} + ${food_id}`);
+    console.log(`EDIT THIS: ${JSON.stringify(log, null, 2)} + ${cat_id} + ${food_id}`);
     setIsAdding(false);
     setEditingLog({
       ...log,
       catId: cat_id,
-      foodId, food_id,
+      foodId: food_id,
     });
     setIsModalOpen(true);
   };
