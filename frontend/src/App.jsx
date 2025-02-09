@@ -46,7 +46,7 @@ function App() {
       </div>*/}
 
       {/* Page Content */}
-        <main className="flex-grow p-4">
+        <div className="flex items-center justify-center min-h-[80vh] p-4">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/cats" element={<Cats />} />
@@ -54,7 +54,7 @@ function App() {
             <Route path="/food-log" element={<FoodLogs />} />
             <Route path="/bulk" element={<BulkFoodLogs />} />
           </Routes>
-        </main>
+        </div>
       </div>
     </Router>
   );
