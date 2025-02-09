@@ -264,7 +264,7 @@ function FoodLogs() {
       />
 
       {/* Calculated Calories */}
-      <p className="text-lg font-bold">Total Calories: {editingLog.calories.toFixed(2)} kcal</p>
+      <p className="text-lg font-bold">Total Calories: {editingLog.calories} kcal</p>
 
       {/* Modal Actions */}
       <div className="flex justify-end gap-2 mt-4">
