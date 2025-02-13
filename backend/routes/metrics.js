@@ -13,7 +13,7 @@ const QUERY_DAILY_SUMMARY = `
     SUM(f.calories) AS total_calories
   FROM food_logs f
   JOIN cats c ON f.cat_id = c.id
-  WHERE DATE(f.timestamp AT TIME ZONE $1) = CURRENT_DATE
+  WHERE DATE(f.timestamp AT TIME ZONE $1) = CURRENT_DATE AT TIME ZONE $1
   GROUP BY c.id, c.name
   ORDER BY cat_name;
 `;
