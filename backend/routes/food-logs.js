@@ -13,7 +13,7 @@ const getWhereSQL = (whereClauses) => {
 const getQueryFoodLogs = (whereSQL, paramCount) => `
   SELECT 
     fl.id AS food_log_id,
-    (fl.timestamp AT TIME ZONE $1) AS timestamp,
+    (fl.timestamp AT TIME ZONE $${paramCount+1}) AS timestamp,
     c.name AS cat_name,
     fl.cat_id AS cat_id,
     f.name AS food_name,
@@ -26,7 +26,7 @@ const getQueryFoodLogs = (whereSQL, paramCount) => `
   INNER JOIN cats c ON c.id = fl.cat_id
   INNER JOIN foods f ON f.id = fl.food_id
   ORDER BY fl.timestamp DESC
-  LIMIT $${paramCount-1} OFFSET $${paramCount}
+  LIMIT $${paramCount+2} OFFSET $${paramCount+3}
 `;
 
 const getTotalFoodLogs = (whereSQL) => `
@@ -63,8 +63,9 @@ router.get("/", async (req, res) => {
     let queryParams = [];
 
     if (date) {
-      whereClauses.push(`f.timestamp >= TIMEZONE($${queryParams.length + 1}, Date($${queryParams.length + 2}))`);
-      whereClauses.push(`f.timestamp < TIMEZONE($${queryParams.length + 1}, Date($${queryParams.length + 2}) + INTERVAL '1 day')`);
+      const paramCount = queryParams.length;
+      whereClauses.push(`f.timestamp >= TIMEZONE($${paramCount + 1}, Date($${paramCount + 2}))`);
+      whereClauses.push(`f.timestamp < TIMEZONE($${paramCount + 1}, Date($${paramCount + 2}) + INTERVAL '1 day')`);
       queryParams.push(USER_TIMEZONE, date);
     }
 
@@ -80,7 +81,7 @@ router.get("/", async (req, res) => {
     const totalLogs = parseInt(totalQuery.rows[0].count);
     const totalPages = Math.ceil(totalLogs / limit);
 
-    queryParams.push(limit, offset);
+    queryParams.push(USER_TIMEZONE, limit, offset);
 
     const foodLogQuery = getQueryFoodLogs(whereClauses, queryParams.length);
     const { rows } = await pool.query(foodLogQuery, queryParams);
