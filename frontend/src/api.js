@@ -75,8 +75,21 @@ export const deleteFood = async (foodId) => {
 // FOOD LOGSSSS
 
 // Fetch all food logs
-export const fetchFoodLogs = async () => {
-  const response = await api.get("/food-logs");
+export const fetchFoodLogs = async ({
+  page,
+  limit,
+  selectedCat,
+  selectedDate
+}) => {
+  const response = await axios.get(`${API_URL}/food-logs`, {
+    params: { 
+      page: page || 1, 
+      limit: limit || 10, 
+      catId: selectedCat, 
+      date: selectedDate 
+    },
+  });
+  
   return response.data;
 };
 

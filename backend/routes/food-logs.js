@@ -3,32 +3,94 @@ const pool = require("../db");
 
 const router = express.Router();
 
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8080/api"; // Set dynamically if needed
 const USER_TIMEZONE = "America/Vancouver";
 
+const getWhereSQL = (whereClauses) => {
+  return whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
+};
 
-const QUERY_FOOD_LOGS = `
+const getQueryFoodLogs = (whereSQL, paramCount) => `
   SELECT 
     fl.id AS food_log_id,
-    (fl.timestamp AT TIME ZONE 'America/Vancouver') AS timestamp,
+    (fl.timestamp AT TIME ZONE $1) AS timestamp,
     c.name AS cat_name,
     fl.cat_id AS cat_id,
     f.name AS food_name,
     fl.food_id AS food_id,
     f.unit AS unit,
     fl.quantity AS quantity,
-    fl.calories AS calories
+    ROUND(fl.calories, 2) AS calories
   FROM food_logs fl
+  ${whereSQL}
   INNER JOIN cats c ON c.id = fl.cat_id
   INNER JOIN foods f ON f.id = fl.food_id
   ORDER BY fl.timestamp DESC
+  LIMIT $${paramCount-1} OFFSET ${paramCount}
 `;
+
+const getTotalFoodLogs = (whereSQL) => `
+  SELECT COUNT(*) 
+  FROM food_logs f 
+  INNER JOIN cats c ON f.cat_id = c.id
+   ${whereSQL}
+`;
+
+// Generate pagination links
+const getPageLinks = (page, totalPages, limit, date, catId) => {
+  const queryParamsString = new URLSearchParams({ limit, date, catId }).toString();
+  const links = {
+    self: `${API_BASE_URL}/food-logs?page=${page}&${queryParamsString}`;
+  };
+  if (page < totalPages) {
+    links.next = `${API_BASE_URL}/food-logs?page=${page + 1}&${queryParamsString}`;
+  }
+  if (page > 1) {
+    links.previous = `${API_BASE_URL}/food-logs?page=${page - 1}&${queryParamsString}`
+  }
+  return links;
+};
 
 // Get all food logs
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query(QUERY_FOOD_LOGS);
-    res.json(result.rows);
+    let { page, limit, date, catId } = req.query;
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10; // Default: 10 logs per page
+    const offset = (page - 1) * limit;
+
+    let whereClauses = [];
+    let queryParams = [USER_TIMEZONE];
+
+    if (date) {
+      whereClauses.push(`DATE(timestamp AT TIME ZONE 'America/Vancouver') = $${queryParams.length + 1}`);
+      queryParams.push(date);
+    }
+
+    if (catId) {
+      whereClauses.push(`c.id = $${queryParams.length + 1}`);
+      queryParams.push(catId);
+    }
+
+    const whereSQL = getWhereSQL(whereClauses);
+
+    // Count total logs for pagination
+    const totalQuery = await pool.query(getTotalFoodLogs(whereClauses), queryParams);
+    const totalLogs = parseInt(totalQuery.rows[0].count);
+    const totalPages = Math.ceil(totalLogs / limit);
+
+    queryParams.push(limit, offset);
+
+    const { rows } = await pool.query(query, queryParams);
+    res.json({
+      page,
+      totalPages,
+      totalLogs,
+      logs: rows,
+      links: getPageLinks(page, totalPages, catId, date),
+    });
   } catch (error) {
+    console.error("Error fetching food logs:", error);
     res.status(500).json({ error: "Database error" });
   }
 });

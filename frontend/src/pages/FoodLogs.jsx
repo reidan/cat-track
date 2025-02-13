@@ -13,9 +13,12 @@ import axios from "axios";
 function FoodLogs() {
   const [cats, setCats] = useState([]);
   const [foods, setFoods] = useState([]);
-  const [foodLogs, setFoodLogs] = useState([]);
+  const [logs, setLogs] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [selectedCat, setSelectedCat] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [paginationLinks, setPaginationLinks] = useState({ self: "", next: null, previous: null });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLog, setEditingLog] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
@@ -25,29 +28,19 @@ function FoodLogs() {
   useEffect(() => {
     fetchCats().then((data) => { setCats(data) });
     const foods = fetchFoods().then((data) => { setFoods(data) });
-    const foodLogs = fetchFoodLogs().then((data) => {
-      setFoodLogs(data);
-      setFilteredLogs(data); // Show all logs initially
-    });
-  }, []);
+    fetchLogs();
+  }, [page, selectedCat, selectedDate]);
 
-  // Get today's date in YYYY-MM-DD format
-  const getTodayDate = () => {
-    return new Date().toLocaleDateString();
-  };
-
-  // Apply filters when button is clicked
-  const applyFilters = () => {
-    console.log(`Date: ${filters.date}`);
-    console.log(`Cat: ${filters.cat}`);
-    var dateFilter = (new Date(filters.date)).toLocaleDateString();
-    setFilteredLogs(
-      foodLogs.filter(
-        (log) =>
-          (filters.cat === "" || log.cat_id === Number(filters.cat)) &&
-          (filters.date === "" || log.timestamp.startsWith(dateFilter))
-      )
-    );
+  const fetchLogs = async () => {
+    try {
+      fetchFoodLogs({ page, limit: 10, catId: selectedCat, date: selectedDate }).then(({logs, totalPages, links}) => {
+        setLogs(logs);
+        setTotalPages(totalPages);
+        setPaginationLinks(links);
+      })
+    } catch (error) {
+      console.error("Error fetching food logs:", error);
+    }
   };
 
   useEffect(() => {
@@ -114,7 +107,7 @@ function FoodLogs() {
     } else {
       updateFoodLog(editingLog.food_log_id, editingLog).then((data) => {
         setFoodLogs(foodLogs.map((log) => (log.id === editingLog.id ? editingLog : log)));
-        applyFilters()
+        setPage(1);
       });
     }
 
@@ -123,7 +116,7 @@ function FoodLogs() {
     } else {
       setIsModalOpen(false);
       setEditingLog(null);
-      applyFilters();
+      setPage(1);
     }
   };
 
@@ -132,7 +125,7 @@ function FoodLogs() {
     console.log(`DELETE THIS: ${id}`);
     deleteFoodLog(id).then((data) => {
       setFoodLogs(foodLogs.filter((log) => log.id !== id));
-      applyFilters();
+      setPage(1);
     });
   };
 
@@ -155,17 +148,17 @@ function FoodLogs() {
         <div className="flex flex-col">
           <input
             type="date"
-            value={filters.date}
-            onChange={(e) => setFilters({ ...filters, date: e.target.value })}
             className="border p-2 rounded"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
           />
         </div>
 
         <div className="flex flex-col">
           <select
-            value={filters.cat}
-            onChange={(e) => setFilters({ ...filters, cat: e.target.value })}
             className="border p-2 rounded"
+            value={selectedCat}
+            onChange={(e) => setSelectedCat(e.target.value)}
           >
             <option value="">All Cats</option>
             {cats.map((cat) => (
@@ -176,39 +169,51 @@ function FoodLogs() {
           </select>
         </div>
 
-        <button onClick={applyFilters} className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
-          Filter
+        <button 
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          onClick={() => setPage(1)}
+        >
+          Apply Filters
         </button>
       </div>
 
       {/* Food Log Table */}
-      <table className="min-w-full bg-white shadow-md rounded-lg mt-4">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="px-4 py-2">Date</th>
-            <th className="px-4 py-2">Cat</th>
-            <th className="px-4 py-2">Food</th>
-            <th className="px-4 py-2">Quantity</th>
-            <th className="px-4 py-2">Calories</th>
-            <th className="px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredLogs.map((log) => (
-            <tr key={log.food_log_id} className="border-t">
-              <td className="px-4 py-2 text-center">{log.timestamp}</td>
-              <td className="px-4 py-2 text-center">{log.cat_name}</td>
-              <td className="px-4 py-2 text-center">{log.food_name}</td>
-              <td className="px-4 py-2 text-center">{log.quantity} {log.unit}</td>
-              <td className="px-4 py-2 text-center">{log.calories} kcal</td>
-              <td className="px-4 py-2 text-center">
-                <button onClick={() => openEditModal(log)} className="text-blue-500 font-bold hover:underline">✏️ Edit</button>
-                <button onClick={() => deleteLog(log.food_log_id)} className="text-red-500 font-bold hover:underline ml-2">🗑️ Delete</button>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white shadow-md rounded-lg mt-4">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="px-4 py-2">Date</th>
+              <th className="px-4 py-2">Cat</th>
+              <th className="px-4 py-2">Food</th>
+              <th className="px-4 py-2">Quantity</th>
+              <th className="px-4 py-2">Calories</th>
+              <th className="px-4 py-2">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredLogs.map((log) => (
+              <tr key={log.food_log_id} className="border-t">
+                <td className="px-4 py-2 text-center">{log.timestamp}</td>
+                <td className="px-4 py-2 text-center">{log.cat_name}</td>
+                <td className="px-4 py-2 text-center">{log.food_name}</td>
+                <td className="px-4 py-2 text-center">{log.quantity} {log.unit}</td>
+                <td className="px-4 py-2 text-center">{log.calories} kcal</td>
+                <td className="px-4 py-2 text-center">
+                  <button onClick={() => openEditModal(log)} className="text-blue-500 font-bold hover:underline">✏️ Edit</button>
+                  <button onClick={() => deleteLog(log.food_log_id)} className="text-red-500 font-bold hover:underline ml-2">🗑️ Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center gap-2 mt-4">
+        <button disabled={!paginationLinks.previous} onClick={() => setPage(page - 1)}>⬅ Prev</button>
+        <span>{page} / {totalPages}</span>
+        <button disabled={!paginationLinks.next} onClick={() => setPage(page + 1)}>Next ➡</button>
+      </div>
 
 {isModalOpen && editingLog !== null && (
   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
