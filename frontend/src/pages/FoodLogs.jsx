@@ -35,7 +35,7 @@ function FoodLogs() {
   useEffect(() => {
     fetchCats().then((data) => { setCats(data) });
     fetchFoods().then((data) => { setFoods(data) });
-  });
+  }, []);
 
   useEffect(() => {
     fetchLogs();
