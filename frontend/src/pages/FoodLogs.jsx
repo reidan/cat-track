@@ -11,7 +11,7 @@ import {
 import axios from "axios";
 
 function FoodLogs() {
-  const getTodayDate = () => new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
+  const getTodayDate = () => new Date().toLocaleDateString().; // Format: YYYY-MM-DD
 
   const [cats, setCats] = useState([]);
   const [foods, setFoods] = useState([]);

@@ -77,13 +77,13 @@ router.get("/", async (req, res) => {
     const whereSQL = getWhereSQL(whereClauses);
 
     // Count total logs for pagination
-    const totalQuery = await pool.query(getTotalFoodLogs(whereClauses), queryParams);
+    const totalQuery = await pool.query(getTotalFoodLogs(whereSQL), queryParams);
     const totalLogs = parseInt(totalQuery.rows[0].count);
     const totalPages = Math.ceil(totalLogs / limit);
 
     queryParams.push(USER_TIMEZONE, limit, offset);
 
-    const foodLogQuery = getQueryFoodLogs(whereClauses, queryParams.length);
+    const foodLogQuery = getQueryFoodLogs(whereSQL, queryParams.length);
     const { rows } = await pool.query(foodLogQuery, queryParams);
     res.json({
       page,
