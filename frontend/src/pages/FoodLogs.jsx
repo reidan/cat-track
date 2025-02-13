@@ -60,7 +60,11 @@ function FoodLogs() {
         setTotalPages(totalPages);
         setPaginationLinks(links);
         setLoading(false);
-      })
+      }).catch((error) => {
+        console.error("Error fetching food logs:", error);
+        toast.error("Failed to fetch logs.");
+        setLoading(false);
+      });
     } catch (error) {
       console.error("Error fetching food logs:", error);
       toast.error("Failed to fetch logs.");
