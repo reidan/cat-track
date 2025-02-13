@@ -13,7 +13,7 @@ const getWhereSQL = (whereClauses) => {
 const getQueryFoodLogs = (whereSQL, paramCount) => `
   SELECT 
     fl.id AS food_log_id,
-    (fl.timestamp AT TIME ZONE $${paramCount-2}) AS timestamp,
+    fl.timestamp AS timestamp,
     c.name AS cat_name,
     fl.cat_id AS cat_id,
     f.name AS food_name,

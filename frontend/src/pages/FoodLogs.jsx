@@ -149,8 +149,10 @@ function FoodLogs() {
         ...editingLog,
         timestamp: new Date().toISOString(),
       }).then(() => {
-        handleSuccessfulSave();
-        toast.success("✅ Food log added!");
+        if (!addMore) {
+          handleSuccessfulSave();
+          toast.success("✅ Food log added!");
+        }
       }).catch((e) => {
         console.log(`ERROR during add: ${e}`);
         toast.error("❌ Failed to add log.");
@@ -158,8 +160,10 @@ function FoodLogs() {
     } else {
       updateFoodLog(editingLog.food_log_id, editingLog).then(
         (data) => {
-          handleSuccessfulSave();
-          toast.success("✏️ Food log updated!");
+          if (!addMore) {
+            handleSuccessfulSave();
+            toast.success("✏️ Food log updated!");
+          }
       }).catch((e) => {
         console.log(`ERROR during update: ${e}`);
         toast.error("❌ Failed to update log.");
