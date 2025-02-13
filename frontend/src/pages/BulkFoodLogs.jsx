@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { Cats, Foods, BulkLogs } from "../api.js";
+import { Cats, Foods, BulkLogs } from "../api";
 const { fetchCats } = Cats;
 const { fetchFoods } = Foods;
 const { bulkUpdateLogs } = BulkLogs;
