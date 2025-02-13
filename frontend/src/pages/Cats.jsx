@@ -108,7 +108,7 @@ function Cats() {
             />
             <input
               type="date"
-              value={editingCat.birthday}
+              value={(new Date(editingCat.birthday)).toISOString().splig('T')[0]}
               onChange={(e) => setEditingCat({ ...editingCat, birthday: e.target.value })}
               className="border p-2 rounded w-full mb-2"
             />

@@ -32,7 +32,7 @@ const getQueryFoodLogs = (whereSQL, paramCount) => `
 const getTotalFoodLogs = (whereSQL) => `
   SELECT COUNT(*) 
   FROM food_logs fl 
-  INNER JOIN cats c ON f.cat_id = c.id
+  INNER JOIN cats c ON fl.cat_id = c.id
    ${whereSQL}
 `;
 
