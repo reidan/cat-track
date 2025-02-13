@@ -23,8 +23,6 @@ function FoodLogs() {
   const [cats, setCats] = useState([]);
   const [foods, setFoods] = useState([]);
 
-  // const [selectedCat, setSelectedCat] = useState("");
-  // const [selectedDate, setSelectedDate] = useState(getTodayDate()); // Default to today's date
   // Applied filters (Only updates when "Apply Filters" is clicked)
   const [filters, setFilters] = useState({ catId: "", date: getTodayDate() });
 
@@ -55,8 +53,8 @@ function FoodLogs() {
       fetchFoodLogs({ 
         page, 
         limit: 10, 
-        selectedCat: filters.catId || null, 
-        selectedDate: filters.date || null,
+        catId: filters.catId || null, 
+        date: filters.date || null,
       }).then(({logs, totalPages, links}) => {
         setLogs(logs);
         setTotalPages(totalPages);
