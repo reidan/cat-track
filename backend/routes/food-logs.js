@@ -64,7 +64,7 @@ router.get("/", async (req, res) => {
 
     if (date) {
       const paramCount = queryParams.length;
-      whereClauses.push(`Date(f.timestamp AT TIME ZONE $${paramCount + 1}) = $${paramCount + 2}`);
+      whereClauses.push(`Date(fl.timestamp AT TIME ZONE $${paramCount + 1}) = $${paramCount + 2}`);
 
       // whereClauses.push(`fl.timestamp >= TIMEZONE($${paramCount + 1}, Date($${paramCount + 2}))`);
       // whereClauses.push(`fl.timestamp < TIMEZONE($${paramCount + 1}, Date($${paramCount + 2}) + INTERVAL '1 day')`);
