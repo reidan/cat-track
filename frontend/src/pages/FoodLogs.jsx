@@ -64,7 +64,7 @@ function FoodLogs() {
         page, 
         limit: 10, 
         selectedCat: filters.catId || null, 
-        selectedDate filters.date || null,
+        selectedDate: filters.date || null,
       }).then(({logs, totalPages, links}) => {
         setLogs(logs);
         setTotalPages(totalPages);
@@ -82,6 +82,18 @@ function FoodLogs() {
     setPage(1);
     setFilters(tempFilters);
   };
+
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short", // "Feb"
+      day: "numeric", // "11"
+      hour: "numeric", // "4"
+      minute: "2-digit", // "30"
+      hour12: true, // "AM/PM"
+    }).format(date).replace(",", " @");
+  };
+
 
   // Open modal for adding a new log
   const openAddModal = () => {
@@ -225,7 +237,7 @@ function FoodLogs() {
           Apply Filters
         </button>
       </div>
-      
+
       {/* Loading Indicator */}
       {loading && (
         <div className="text-center py-4">
@@ -249,7 +261,7 @@ function FoodLogs() {
           <tbody>
             {logs.map((log) => (
               <tr key={log.food_log_id} className="border-t">
-                <td className="px-4 py-2 text-center">{log.timestamp}</td>
+                <td className="px-4 py-2 text-center">{formatTimestamp(log.timestamp)}</td>
                 <td className="px-4 py-2 text-center">{log.cat_name}</td>
                 <td className="px-4 py-2 text-center">{log.food_name}</td>
                 <td className="px-4 py-2 text-center">{log.quantity} {log.unit}</td>
