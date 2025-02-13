@@ -78,18 +78,18 @@ export const deleteFood = async (foodId) => {
 export const fetchFoodLogs = async ({
   page,
   limit,
-  selectedCat,
-  selectedDate
+  catId,
+  date
 }) => {
   const response = await axios.get(`${API_URL}/food-logs`, {
     params: { 
       page: page || 1, 
       limit: limit || 10, 
-      catId: selectedCat, 
-      date: selectedDate 
+      catId, 
+      date 
     },
   });
-  
+
   return response.data;
 };
 
