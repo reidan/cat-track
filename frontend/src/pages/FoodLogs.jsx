@@ -9,31 +9,42 @@ import {
 } from "../api";
 
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import styles
 
 function FoodLogs() {
   const getTodayDate = () => new Date().toLocaleDateString(); // Format: YYYY-MM-DD
 
-  const [cats, setCats] = useState([]);
-  const [foods, setFoods] = useState([]);
   const [logs, setLogs] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedCat, setSelectedCat] = useState("");
-  const [selectedDate, setSelectedDate] = useState(getTodayDate()); // Default to today's date
   const [paginationLinks, setPaginationLinks] = useState({ self: "", next: null, previous: null });
+  
+  const [cats, setCats] = useState([]);
+  const [foods, setFoods] = useState([]);
+
+  // const [selectedCat, setSelectedCat] = useState("");
+  // const [selectedDate, setSelectedDate] = useState(getTodayDate()); // Default to today's date
+  // Applied filters (Only updates when "Apply Filters" is clicked)
+  const [filters, setFilters] = useState({ catId: "", date: getTodayDate() });
+
+  // Temporary filters (Updates when user selects values but before applying)
+  const [tempFilters, setTempFilters] = useState({ catId: "", date: getTodayDate() });
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLog, setEditingLog] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
-  const [filters, setFilters] = useState({ cat: "", date: "" });
-  const [filteredLogs, setFilteredLogs] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+
+  const limit = 10;
 
   useEffect(() => {
     fetchCats().then((data) => { setCats(data) });
-    const foods = fetchFoods().then((data) => { setFoods(data) });
-    fetchLogs();
-  }, [page, selectedCat, selectedDate]);
+    fetchFoods().then((data) => { setFoods(data) });
+  });
 
-  const fetchLogs = async () => {
+  useEffect(() => {
     try {
       fetchFoodLogs({ page, limit: 10, selectedCat, selectedDate }).then(({logs, totalPages, links}) => {
         setLogs(logs);
@@ -43,6 +54,33 @@ function FoodLogs() {
     } catch (error) {
       console.error("Error fetching food logs:", error);
     }
+  }, [page, filters]);
+
+  const fetchLogs = async () => {
+    setLoading(true);
+    try {
+      console.log("📡 Fetching logs with:", { page, limit, ...filters });
+      fetchFoodLogs({ 
+        page, 
+        limit: 10, 
+        selectedCat: filters.catId || null, 
+        selectedDate filters.date || null,
+      }).then(({logs, totalPages, links}) => {
+        setLogs(logs);
+        setTotalPages(totalPages);
+        setPaginationLinks(links);
+        setLoading(false);
+      })
+    } catch (error) {
+      console.error("Error fetching food logs:", error);
+      toast.error("Failed to fetch logs.");
+      setLoading(false);
+    }
+  };
+
+  const handleApplyFilters = () => {
+    setPage(1);
+    setFilters(tempFilters);
   };
 
   // Open modal for adding a new log
@@ -90,6 +128,16 @@ function FoodLogs() {
     setEditingLog(updatedLog);
   };
 
+  const handleSuccessfulSave = (addMore = false) => {
+    if (addMore) {
+      setEditingLog({ ...editingLog, quantity: 0, calories: 0 });
+    } else {
+      setIsModalOpen(false);
+      setEditingLog(null);
+      fetchLogs();
+    }
+  };
+
   // Save new or edited food log
   const saveLog = async (addMore = false) => {
     if (!editingLog || !editingLog.catId || !editingLog.foodId || editingLog.quantity <= 0) return;
@@ -99,36 +147,39 @@ function FoodLogs() {
       addFoodLog({
         ...editingLog,
         timestamp: new Date().toISOString(),
-      }).then((data) => {
-        setFoodLogs([...foodLogs, data]);
-      })
-    } else {
-      updateFoodLog(editingLog.food_log_id, editingLog).then((data) => {
-        setFoodLogs(foodLogs.map((log) => (log.id === editingLog.id ? editingLog : log)));
-        setPage(1);
+      }).then(() => {
+        handleSuccessfulSave();
+        toast.success("✅ Food log added!");
+      }).catch((e) => {
+        console.log(`ERROR during add: ${e}`);
+        toast.error("❌ Failed to add log.");
       });
-    }
-
-    if (addMore) {
-      setEditingLog({ ...editingLog, quantity: 0, calories: 0 });
     } else {
-      setIsModalOpen(false);
-      setEditingLog(null);
-      setPage(1);
+      updateFoodLog(editingLog.food_log_id, editingLog).then(
+        (data) => {
+          handleSuccessfulSave();
+          toast.success("✏️ Food log updated!");
+      }).catch((e) => {
+        console.log(`ERROR during update: ${e}`);
+        toast.error("❌ Failed to update log.");
+      });
     }
   };
 
   // Delete food log
   const deleteLog = async (id) => {
     console.log(`DELETE THIS: ${id}`);
+    const isConfirmed = window.confirm("Are you sure you want to delete this food log?");
+    if (!isConfirmed) return;
     deleteFoodLog(id).then((data) => {
-      setFoodLogs(foodLogs.filter((log) => log.id !== id));
-      setPage(1);
+      fetchLogs();
+      toast.success("🗑️ Food log deleted!");
     });
   };
 
   return (
     <div className="w-full max-w-3xl">
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop />
       {/* Header & Add Button in Line */}
       <div className="flex justify-between items-center mt-6 mb-4">
         <h2 className="text-2xl font-bold mt-6">📊 Food Consumption Log</h2>
@@ -147,16 +198,16 @@ function FoodLogs() {
           <input
             type="date"
             className="border p-2 rounded"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
+            value={tempFilters.date}
+            onChange={(e) => setTempFilters((prev) => ({ ...prev, date: e.target.value }))}
           />
         </div>
 
         <div className="flex flex-col">
           <select
             className="border p-2 rounded"
-            value={selectedCat}
-            onChange={(e) => setSelectedCat(e.target.value)}
+            value={tempFilters.catId}
+            onChange={(e) => setTempFilters((prev) => ({ ...prev, catId: e.target.value }))}
           >
             <option value="">All Cats</option>
             {cats.map((cat) => (
@@ -169,11 +220,18 @@ function FoodLogs() {
 
         <button 
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          onClick={() => setPage(1)}
+          onClick={handleApplyFilters}
         >
           Apply Filters
         </button>
       </div>
+      
+      {/* Loading Indicator */}
+      {loading && (
+        <div className="text-center py-4">
+          <span className="text-gray-600">Loading food logs...</span>
+        </div>
+      )}
 
       {/* Food Log Table */}
       <div className="overflow-x-auto">
