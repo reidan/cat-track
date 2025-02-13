@@ -22,16 +22,16 @@ const getQueryFoodLogs = (whereSQL, paramCount) => `
     fl.quantity AS quantity,
     ROUND(fl.calories, 2) AS calories
   FROM food_logs fl
-  ${whereSQL}
   INNER JOIN cats c ON c.id = fl.cat_id
   INNER JOIN foods f ON f.id = fl.food_id
+  ${whereSQL}
   ORDER BY fl.timestamp DESC
   LIMIT $${paramCount-1} OFFSET $${paramCount}
 `;
 
 const getTotalFoodLogs = (whereSQL) => `
   SELECT COUNT(*) 
-  FROM food_logs f 
+  FROM food_logs fl 
   INNER JOIN cats c ON f.cat_id = c.id
    ${whereSQL}
 `;
@@ -64,8 +64,8 @@ router.get("/", async (req, res) => {
 
     if (date) {
       const paramCount = queryParams.length;
-      whereClauses.push(`f.timestamp >= TIMEZONE($${paramCount + 1}, Date($${paramCount + 2}))`);
-      whereClauses.push(`f.timestamp < TIMEZONE($${paramCount + 1}, Date($${paramCount + 2}) + INTERVAL '1 day')`);
+      whereClauses.push(`fl.timestamp >= TIMEZONE($${paramCount + 1}, Date($${paramCount + 2}))`);
+      whereClauses.push(`fl.timestamp < TIMEZONE($${paramCount + 1}, Date($${paramCount + 2}) + INTERVAL '1 day')`);
       queryParams.push(USER_TIMEZONE, date);
     }
 
