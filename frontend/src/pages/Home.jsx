@@ -31,11 +31,10 @@ function Home() {
     if (selectedCat) {
       fetchWeeklyFoodLogs(selectedCat).then((data) => {
         const formattedData = Object.entries(data).map(([date, values]) => ({
-          date,
-          caloriesEaten: values.calories, //.toFixed(0),
-          calorieGoal: values.goal, //.toFixed(0),
+          date: (new Date(date)).toLocaleDateString(),
+          caloriesEaten: values.calories,
+          calorieGoal: values.goal,
         }));
-        console.log(typeof formattedData[0].caloriesEaten);
         setWeeklyData(formattedData);
       });
     }
@@ -66,7 +65,7 @@ function Home() {
         <tbody>
           {cats.map((cat) => {
             const summary = dailySummaries[cat.id];
-            const caloriesEaten = summary?.total_calories || 0; //.toFixed(0);
+            const caloriesEaten = summary?.total_calories || 0;
             const calorieGoal = cat.calorieGoal || 0;
             const difference = caloriesEaten - calorieGoal;
             const progress = calorieGoal > 0 ? (caloriesEaten / calorieGoal) * 100 : 0;
@@ -87,7 +86,7 @@ function Home() {
                     difference < -10 ? "text-red-500" : difference > 10 ? "text-red-500" : "text-gray-500"
                   }`}
                 >
-                  {difference} kcal
+                  {difference.toFixed(2)} kcal
                 </td>
                 <td className="px-4 py-2 text-center">
                   <div className="w-32 bg-gray-200 rounded-full h-4">
