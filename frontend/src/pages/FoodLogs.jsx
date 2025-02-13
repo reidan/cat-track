@@ -12,7 +12,7 @@ import axios from "axios";
 
 function FoodLogs() {
   const getTodayDate = () => new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
-  
+
   const [cats, setCats] = useState([]);
   const [foods, setFoods] = useState([]);
   const [logs, setLogs] = useState([]);
@@ -35,7 +35,7 @@ function FoodLogs() {
 
   const fetchLogs = async () => {
     try {
-      fetchFoodLogs({ page, limit: 10, catId: selectedCat, date: selectedDate }).then(({logs, totalPages, links}) => {
+      fetchFoodLogs({ page, limit: 10, selectedCat, selectedDate }).then(({logs, totalPages, links}) => {
         setLogs(logs);
         setTotalPages(totalPages);
         setPaginationLinks(links);
