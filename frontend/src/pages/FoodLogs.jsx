@@ -45,15 +45,7 @@ function FoodLogs() {
   });
 
   useEffect(() => {
-    try {
-      fetchFoodLogs({ page, limit: 10, selectedCat, selectedDate }).then(({logs, totalPages, links}) => {
-        setLogs(logs);
-        setTotalPages(totalPages);
-        setPaginationLinks(links);
-      })
-    } catch (error) {
-      console.error("Error fetching food logs:", error);
-    }
+    fetchLogs();
   }, [page, filters]);
 
   const fetchLogs = async () => {
