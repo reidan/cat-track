@@ -40,7 +40,7 @@ const getTotalFoodLogs = (whereSQL) => `
 const getPageLinks = (page, totalPages, limit, date, catId) => {
   const queryParamsString = new URLSearchParams({ limit, date, catId }).toString();
   const links = {
-    self: `${API_BASE_URL}/food-logs?page=${page}&${queryParamsString}`;
+    self: `${API_BASE_URL}/food-logs?page=${page}&${queryParamsString}`,
   };
   if (page < totalPages) {
     links.next = `${API_BASE_URL}/food-logs?page=${page + 1}&${queryParamsString}`;
