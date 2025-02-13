@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { fetchCats, fetchFoods, bulkUpdateLogs } from "../api";
-import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
+import { Cats, Foods, BulkLogs } from "../api.js";
+const { fetchCats } = Cats;
+const { fetchFoods } = Foods;
+const { bulkUpdateLogs } = BulkLogs;
 
 function BulkFoodLogs() {
   const [jsonData, setJsonData] = useState("");

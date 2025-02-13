@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { fetchFoods, addFood, putFood } from "../api";
+
+import { Foods } from "../api";
+const { fetchFoods, addFood, putFood } = Foods;
 
 function Food() {
   const [foods, setFoods] = useState([]);

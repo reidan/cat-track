@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { fetchCats, fetchWeeklyFoodLogs, fetchDailySummary } from "../api";
-
 import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+
+import { Cats, Metrics } from "../api";
+const { fetchCats } = Cats;
+const { fetchWeeklyFoodLogs, fetchDailySummary } = Metrics;
 
 function Home() {
   const [cats, setCats] = useState([]);

@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
-import {
-  fetchFoods,
-  fetchCats,
-  fetchFoodLogs,
-  addFoodLog,
-  updateFoodLog,
-  deleteFoodLog
-} from "../api";
-
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
+
+import { Cats, Foods, FoodLogs } from "../api";
+const { fetchCats } = Cats;
+const { fetchFoods } = Foods;
+const { fetchFoodLogs, addFoodLog, updateFoodLog, deleteFoodLog } = FoodLogs;
 
 function FoodLogs() {
   const getTodayDate = () => new Date().toLocaleDateString(); // Format: YYYY-MM-DD
