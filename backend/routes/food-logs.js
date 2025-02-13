@@ -82,7 +82,7 @@ router.get("/", async (req, res) => {
 
     queryParams.push(limit, offset);
 
-    const { rows } = await pool.query(query, queryParams);
+    const { rows } = await pool.query(getQueryFoodLogs(whereClauses), queryParams);
     res.json({
       page,
       totalPages,
