@@ -43,10 +43,6 @@ function FoodLogs() {
     }
   };
 
-  useEffect(() => {
-    setSelectedDate(getTodayDate());
-  }, []);
-
   // Open modal for adding a new log
   const openAddModal = () => {
     setIsAdding(true);
