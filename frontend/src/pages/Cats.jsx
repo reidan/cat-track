@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Cats } from "../api";
+import { Cats as CatsAPI } from "../api";
 
-const { fetchCats, addCat, updateCat, deleteCat } = Cats;
+const { fetchCats, addCat, updateCat, deleteCat } = CatsAPI;
 
 function Cats() {
   const [cats, setCats] = useState([]);
