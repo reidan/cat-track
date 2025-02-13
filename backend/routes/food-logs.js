@@ -82,7 +82,8 @@ router.get("/", async (req, res) => {
 
     queryParams.push(limit, offset);
 
-    const { rows } = await pool.query(getQueryFoodLogs(whereClauses), queryParams);
+    const foodLogQuery = getQueryFoodLogs(whereClauses, queryParams);
+    const { rows } = await pool.query(foodLogQuery, queryParams);
     res.json({
       page,
       totalPages,
@@ -91,7 +92,6 @@ router.get("/", async (req, res) => {
       links: getPageLinks(page, totalPages, catId, date),
     });
   } catch (error) {
-    console.error("Error fetching food logs:", error);
     res.status(500).json({ error: "Database error" });
   }
 });
