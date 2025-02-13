@@ -13,7 +13,7 @@ const getWhereSQL = (whereClauses) => {
 const getQueryFoodLogs = (whereSQL, paramCount) => `
   SELECT 
     fl.id AS food_log_id,
-    (fl.timestamp AT TIME ZONE $${paramCount+1}) AS timestamp,
+    (fl.timestamp AT TIME ZONE $${paramCount-2}) AS timestamp,
     c.name AS cat_name,
     fl.cat_id AS cat_id,
     f.name AS food_name,
@@ -26,7 +26,7 @@ const getQueryFoodLogs = (whereSQL, paramCount) => `
   INNER JOIN cats c ON c.id = fl.cat_id
   INNER JOIN foods f ON f.id = fl.food_id
   ORDER BY fl.timestamp DESC
-  LIMIT $${paramCount+2} OFFSET $${paramCount+3}
+  LIMIT $${paramCount-1} OFFSET $${paramCount}
 `;
 
 const getTotalFoodLogs = (whereSQL) => `
