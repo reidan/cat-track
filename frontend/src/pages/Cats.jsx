@@ -79,7 +79,7 @@ function Cats() {
                 )}
               </td>
               <td className="px-4 py-2 text-center">{cat.name}</td>
-              <td className="px-4 py-2 text-center">🎂 {cat.birthday}</td>
+              <td className="px-4 py-2 text-center">🎂 {(new Date(cat.birthday)).toISOString().splig('T')[0]}</td>
               <td className="px-4 py-2 text-center">{cat.calorieGoal} kcal</td>
               <td className="px-4 py-2 text-center">
                 <button
@@ -108,7 +108,7 @@ function Cats() {
             />
             <input
               type="date"
-              value={(new Date(editingCat.birthday)).toISOString().splig('T')[0]}
+              value={editingCat.birthday}
               onChange={(e) => setEditingCat({ ...editingCat, birthday: e.target.value })}
               className="border p-2 rounded w-full mb-2"
             />
