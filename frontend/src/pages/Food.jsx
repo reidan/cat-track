@@ -38,7 +38,8 @@ function Food() {
   // Save new or edited food
   const saveFood = async () => {
     if (!editingFood || !editingFood.name || !editingFood.unit || editingFood.calories <= 0) return;
-
+    console.log(`saving food: ${editingFood.name}`);
+    
     let response;
     if (isAdding) {
       addFood(editingFood).then((data) => {
