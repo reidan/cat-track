@@ -63,8 +63,8 @@ router.get("/", async (req, res) => {
     let queryParams = [];
 
     if (date) {
-      whereClauses.push(`f.timestamp >= TIMEZONE($${queryParams.length + 1}, Date($${queryParams.length + 2})) 
-        AND f.timestamp < TIMEZONE($${queryParams.length + 1}, Date($${queryParams.length + 2}) + INTERVAL '1 day')`
+      whereClauses.push(`f.timestamp >= TIMEZONE($${queryParams.length + 1}, Date($${queryParams.length + 2}))`);
+      whereClauses.push(`f.timestamp < TIMEZONE($${queryParams.length + 1}, Date($${queryParams.length + 2}) + INTERVAL '1 day')`);
       queryParams.push(USER_TIMEZONE, date);
     }
 

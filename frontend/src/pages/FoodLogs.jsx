@@ -11,13 +11,15 @@ import {
 import axios from "axios";
 
 function FoodLogs() {
+  const getTodayDate = () => new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
+  
   const [cats, setCats] = useState([]);
   const [foods, setFoods] = useState([]);
   const [logs, setLogs] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedCat, setSelectedCat] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(getTodayDate()); // Default to today's date
   const [paginationLinks, setPaginationLinks] = useState({ self: "", next: null, previous: null });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLog, setEditingLog] = useState(null);
