@@ -189,7 +189,7 @@ function FoodLogs() {
             </tr>
           </thead>
           <tbody>
-            {filteredLogs.map((log) => (
+            {logs.map((log) => (
               <tr key={log.food_log_id} className="border-t">
                 <td className="px-4 py-2 text-center">{log.timestamp}</td>
                 <td className="px-4 py-2 text-center">{log.cat_name}</td>
