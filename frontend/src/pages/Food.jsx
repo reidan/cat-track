@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Foods } from "../api";
-const { fetchFoods, addFood, putFood } = Foods;
+const { fetchFoods, addFood, updateFood } = Foods;
 
 function Food() {
   const [foods, setFoods] = useState([]);
@@ -30,7 +30,7 @@ function Food() {
   };
 
   // Handle input change
-  const updateFood = (field, value) => {
+  const changeFood = (field, value) => {
     if (!editingFood) return;
     setEditingFood({ ...editingFood, [field]: value });
   };
@@ -39,14 +39,14 @@ function Food() {
   const saveFood = async () => {
     if (!editingFood || !editingFood.name || !editingFood.unit || editingFood.calories <= 0) return;
     console.log(`saving food: ${editingFood.name}`);
-    
+
     let response;
     if (isAdding) {
       addFood(editingFood).then((data) => {
         setFoods([...foods, data]);
       });
     } else {
-      putFood(editingFood.id, editingFood).then((data) => {
+      updateFood(editingFood.id, editingFood).then((data) => {
         setFoods(foods.map((data) => (food.id === editingFood.id ? editingFood : food)));
       });
     }
@@ -109,7 +109,7 @@ function Food() {
             <input
               type="text"
               value={editingFood.name}
-              onChange={(e) => updateFood("name", e.target.value)}
+              onChange={(e) => changeFood("name", e.target.value)}
               className="border p-2 rounded w-full mb-2"
             />
 
@@ -118,7 +118,7 @@ function Food() {
             <input
               type="text"
               value={editingFood.unit}
-              onChange={(e) => updateFood("unit", e.target.value)}
+              onChange={(e) => changeFood("unit", e.target.value)}
               className="border p-2 rounded w-full mb-2"
             />
 
@@ -128,7 +128,7 @@ function Food() {
               type="number"
               step="0.001"
               value={editingFood.calories}
-              onChange={(e) => updateFood("calories", parseFloat(e.target.value))}
+              onChange={(e) => changeFood("calories", parseFloat(e.target.value))}
               className="border p-2 rounded w-full mb-2"
             />
 

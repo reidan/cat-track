@@ -68,7 +68,7 @@ router.get("/", async (req, res) => {
 
       // whereClauses.push(`fl.timestamp >= TIMEZONE($${paramCount + 1}, Date($${paramCount + 2}))`);
       // whereClauses.push(`fl.timestamp < TIMEZONE($${paramCount + 1}, Date($${paramCount + 2}) + INTERVAL '1 day')`);
-      queryParams.push(date);
+      queryParams.push(USER_TIMEZONE, date);
     }
 
     if (catId) {
@@ -83,7 +83,7 @@ router.get("/", async (req, res) => {
     const totalLogs = parseInt(totalQuery.rows[0].count);
     const totalPages = Math.ceil(totalLogs / limit);
 
-    queryParams.push(USER_TIMEZONE, limit, offset);
+    queryParams.push(limit, offset);
 
     const foodLogQuery = getQueryFoodLogs(whereSQL, queryParams.length);
     const { rows } = await pool.query(foodLogQuery, queryParams);
