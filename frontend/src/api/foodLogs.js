@@ -1,9 +1,9 @@
 import api from "./apiClient";
 
 // Fetch all food logs (with pagination & filters)
-export const fetchFoodLogs = async ({ page = 1, limit = 10, selectedCat, selectedDate }) => {
+export const fetchFoodLogs = async ({ page = 1, limit = 10, catId, date }) => {
   const response = await api.get("/food-logs", {
-    params: { page, limit, catId: selectedCat, date: selectedDate },
+    params: { page, limit, catId, date },
   });
   return response.data;
 };
