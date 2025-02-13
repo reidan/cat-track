@@ -26,7 +26,7 @@ const getQueryFoodLogs = (whereSQL, paramCount) => `
   INNER JOIN cats c ON c.id = fl.cat_id
   INNER JOIN foods f ON f.id = fl.food_id
   ORDER BY fl.timestamp DESC
-  LIMIT $${paramCount-1} OFFSET ${paramCount}
+  LIMIT $${paramCount-1} OFFSET $${paramCount}
 `;
 
 const getTotalFoodLogs = (whereSQL) => `
