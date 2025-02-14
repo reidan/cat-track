@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { DateTime } from "luxon";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
+
+import DateInput from "../components/DateInput";
 
 import { Cats, Foods, FoodLogs as FoodLogsAPI } from "../api";
 const { fetchCats } = Cats;
@@ -8,8 +11,6 @@ const { fetchFoods } = Foods;
 const { fetchFoodLogs, addFoodLog, updateFoodLog, deleteFoodLog } = FoodLogsAPI;
 
 function FoodLogs() {
-  const getTodayDate = () => new Date().toLocaleDateString(); // Format: YYYY-MM-DD
-
   const [logs, setLogs] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -19,10 +20,10 @@ function FoodLogs() {
   const [foods, setFoods] = useState([]);
 
   // Applied filters (Only updates when "Apply Filters" is clicked)
-  const [filters, setFilters] = useState({ catId: "", date: getTodayDate() });
+  const [filters, setFilters] = useState({ catId: "", date: "" });
 
   // Temporary filters (Updates when user selects values but before applying)
-  const [tempFilters, setTempFilters] = useState({ catId: "", date: getTodayDate() });
+  const [tempFilters, setTempFilters] = useState({ catId: "", date: "" });
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLog, setEditingLog] = useState(null);
@@ -67,22 +68,18 @@ function FoodLogs() {
     }
   };
 
+  const handleDateChange = (newDate) => {
+    setTempFilters((prev) => ({ ...prev, date: newDate }));
+  };
+
   const handleApplyFilters = () => {
     setPage(1);
     setFilters(tempFilters);
   };
 
   const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp);
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short", // "Feb"
-      day: "numeric", // "11"
-      hour: "numeric", // "4"
-      minute: "2-digit", // "30"
-      hour12: true, // "AM/PM"
-    }).format(date).replace(",", " @");
+    return DateTime.fromISO(timestamp).toFormat("MMM d @ h:mm a");
   };
-
 
   // Open modal for adding a new log
   const openAddModal = () => {
@@ -187,7 +184,7 @@ function FoodLogs() {
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop />
       {/* Header & Add Button in Line */}
       <div className="flex justify-between items-center mt-6 mb-4">
-        <h2 className="text-2xl font-bold mt-6">📊 Food Consumption Log</h2>
+        <h2 className="text-2xl font-bold mt-6">🥘 Food Logs</h2>
         {/* Add Log Button */}
         <button
           onClick={openAddModal}
@@ -200,12 +197,7 @@ function FoodLogs() {
       {/* Filters */}
       <div className="flex gap-4 mt-4 mb-4">
         <div className="flex flex-col">
-          <input
-            type="date"
-            className="border p-2 rounded"
-            value={tempFilters.date}
-            onChange={(e) => setTempFilters((prev) => ({ ...prev, date: e.target.value }))}
-          />
+          <DateInput value={tempFilters.date} onChange={handleDateChange} />
         </div>
 
         <div className="flex flex-col">

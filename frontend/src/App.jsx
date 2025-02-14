@@ -27,7 +27,7 @@ function App() {
             <NavLink to="/" onClick={() => setIsOpen(!isOpen)} className={({ isActive }) => `block p-2 ${isActive ? "bg-black" : ""}`}>🏠 Home</NavLink>
             <NavLink to="/cats" onClick={() => setIsOpen(!isOpen)} className={({ isActive }) => `block p-2 ${isActive ? "bg-black" : ""}`}>🐱 Cats</NavLink>
             <NavLink to="/foods" onClick={() => setIsOpen(!isOpen)} className={({ isActive }) => `block p-2 ${isActive ? "bg-black" : ""}`}>🍽️ Foods</NavLink>
-            <NavLink to="/food-log" onClick={() => setIsOpen(!isOpen)} className={({ isActive }) => `block p-2 ${isActive ? "bg-black" : ""}`}>📊 Food Log</NavLink>
+            <NavLink to="/food-log" onClick={() => setIsOpen(!isOpen)} className={({ isActive }) => `block p-2 ${isActive ? "bg-black" : ""}`}>🥘 Food Log</NavLink>
             {/*<NavLink to="/bulk" onClick={() => setIsOpen(!isOpen)} className={({ isActive }) => `block p-2 ${isActive ? "bg-black" : ""}`}>Bulk Upload</NavLink>*/}
           </div>
         </nav>
