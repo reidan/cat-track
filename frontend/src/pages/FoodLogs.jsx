@@ -10,6 +10,8 @@ const { fetchCats } = Cats;
 const { fetchFoods } = Foods;
 const { fetchFoodLogs, addFoodLog, updateFoodLog, deleteFoodLog } = FoodLogsAPI;
 
+const getTodayDate = () => DateTime.now().toFormat("yyyy-MM-dd");
+
 function FoodLogs() {
   const [logs, setLogs] = useState([]);
   const [page, setPage] = useState(1);
@@ -20,10 +22,8 @@ function FoodLogs() {
   const [foods, setFoods] = useState([]);
 
   // Applied filters (Only updates when "Apply Filters" is clicked)
-  const [filters, setFilters] = useState({ catId: "", date: "" });
-
-  // Temporary filters (Updates when user selects values but before applying)
-  const [tempFilters, setTempFilters] = useState({ catId: "", date: "" });
+  const [filters, setFilters] = useState({ catId: "", date: getTodayDate() });
+  const [tempFilters, setTempFilters] = useState({ catId: "", date: getTodayDate() });
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLog, setEditingLog] = useState(null);
