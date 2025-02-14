@@ -10,11 +10,12 @@ const QUERY_DAILY_SUMMARY = `
   SELECT 
     c.id AS cat_id,
     c.name AS cat_name,
-    ROUND(SUM(f.calories), 2) AS total_calories
+    ROUND(SUM(f.calories), 2) AS total_calories,
+    CURRENT_DATE AS date
   FROM food_logs f
   JOIN cats c ON f.cat_id = c.id
-  WHERE f.timestamp >= TIMEZONE($1, CURRENT_DATE) 
-    AND f.timestamp < TIMEZONE($1, CURRENT_DATE + INTERVAL '1 day')
+  WHERE
+    DATE(f.timestamp AT TIME ZONE 'America/Vancouver') = CURRENT_DATE
   GROUP BY c.id, c.name
   ORDER BY cat_name;
 `;
