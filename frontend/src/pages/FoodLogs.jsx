@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
 
 import DateInput from "../components/DateInput";
+import Modal from "../components/Modal";
 
 import { Cats, Foods, FoodLogs as FoodLogsAPI } from "../api";
 const { fetchCats } = Cats;
@@ -271,10 +272,33 @@ function FoodLogs() {
       </div>
 
 {isModalOpen && editingLog !== null && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-      <h2 className="text-xl font-bold mb-4">{isAdding ? "Add Food Log" : "Edit Food Log"}</h2>
-
+  <Modal
+    isOpen={isModalOpen}
+    onClose={() => setIsModalOpen(false)}
+    title={isAdding ? "Add Food Log" : "Edit Food Log"}
+    actions={
+      <>
+        <button
+          onClick={() => setIsModalOpen(false)}
+          className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400"
+        >
+          Cancel
+        </button>
+        {isAdding && <button
+          onClick={() => saveLog(true)} // Save and add another
+          className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+        >
+          Save & Add More
+        </button>}
+        <button
+          onClick={() => saveLog(false)} // Save and close
+          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+        >
+          Save
+        </button>
+      </>
+    }
+  >
       {/* Select Cat */}
       <label className="block mb-2 font-semibold">Choose a Cat:</label>
       <select
@@ -297,7 +321,10 @@ function FoodLogs() {
           value: food.id,
           label: `${food.favorite ? "⭐ " : ""}${food.name}`,
         }))}
-        // value={foods.find((food) => food.id === editingLog.foodId) || null}
+        value={foods.find((food) => {
+          console.log(`In value function: ${JSON.stringify(food)}`);
+          return food.id === editingLog.foodId || null;
+        }}
         onChange={(selected) => updateLog("foodId", selected.value)}
         placeholder="Search food..."
         className="mb-2"
@@ -323,30 +350,7 @@ function FoodLogs() {
 
       {/* Calculated Calories */}
       <p className="text-lg font-bold">Total Calories: {editingLog.calories} kcal</p>
-
-      {/* Modal Actions */}
-      <div className="flex justify-end gap-2 mt-4">
-        <button
-          onClick={() => setIsModalOpen(false)}
-          className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400"
-        >
-          Cancel
-        </button>
-        {isAdding && <button
-          onClick={() => saveLog(true)} // Save and add another
-          className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
-        >
-          Save & Add More
-        </button>}
-        <button
-          onClick={() => saveLog(false)} // Save and close
-          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  </div>
+  </Modal>
 )}
 
     </div>
