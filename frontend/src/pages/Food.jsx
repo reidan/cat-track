@@ -73,6 +73,17 @@ function Food() {
       {/* Header & Add Button in Line */}
       <div className="flex justify-between items-center mt-6 mb-4">
         <h2 className="text-2xl font-bold">🍽️ Foods</h2>
+        {/* Add Food Button */}
+        <button
+          onClick={openAddModal}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+        >
+          + Add Food
+        </button>
+      </div>
+
+      {/* Filters */}
+      <div className="flex gap-4 mt-4 mb-4">
         <input 
           type="text"
           placeholder="Search foods..."
@@ -85,13 +96,6 @@ function Food() {
           className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
         >
           🔍 Search
-        </button>
-        {/* Add Food Button */}
-        <button
-          onClick={openAddModal}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-        >
-          + Add Food
         </button>
       </div>
 
