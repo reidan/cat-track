@@ -113,6 +113,7 @@ function FoodLogs() {
     let updatedLog = { ...editingLog, [field]: value };
     console.log(`Updating ${field}: ${value}`);
     console.log(`Value: ${JSON.stringify(value, null, 2)}`);
+    console.log(`Editing Log Food: ${JSON.stringify(editingLog.food, null, 2)}`);
 
     // Auto-update unit and calories when food is selected
     if (field === "foodId") {
