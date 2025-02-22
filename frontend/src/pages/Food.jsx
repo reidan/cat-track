@@ -1,19 +1,32 @@
 import { useEffect, useState } from "react";
 
 import { Foods } from "../api";
-const { fetchFoods, addFood, updateFood } = Foods;
+const { fetchFoods, addFood, updateFood, toggleFavorite } = Foods;
 
 function Food() {
   const [foods, setFoods] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingFood, setEditingFood] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
-    fetchFoods().then((data) => {
-      setFoods(data);
-    });
+    fetchFoods().then(setFoods);
   }, []);
+
+  // Search foods by name
+  const handleSearch = async () => {
+    const filteredFoods = await fetchFoods(searchTerm);
+    setFoods(filteredFoods);
+  };
+
+  // Toggle favorite
+  const handleToggleFavorite = async (foodId) => {
+    const updatedFood = await toggleFavorite(foodId);
+    setFoods(foods.map(food => 
+      food.id === foodId ? { ...food, favorite: updatedFood.favorite } : food
+    ));
+  };
 
   // Open modal for adding a new food
   const openAddModal = () => {
@@ -60,6 +73,19 @@ function Food() {
       {/* Header & Add Button in Line */}
       <div className="flex justify-between items-center mt-6 mb-4">
         <h2 className="text-2xl font-bold">🍽️ Foods</h2>
+        <input 
+          type="text"
+          placeholder="Search foods..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border p-2 rounded"
+        />
+        <button 
+          onClick={handleSearch}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+        >
+          🔍 Search
+        </button>
         {/* Add Food Button */}
         <button
           onClick={openAddModal}
@@ -76,6 +102,7 @@ function Food() {
             <th className="px-4 py-2">Food Name</th>
             <th className="px-4 py-2">Unit</th>
             <th className="px-4 py-2">Calories per Unit</th>
+            <th className="px-4 py-2">Favorite</th>
             <th className="px-4 py-2">Actions</th>
           </tr>
         </thead>
@@ -85,6 +112,14 @@ function Food() {
               <td className="px-4 py-2 text-center">{food.name}</td>
               <td className="px-4 py-2 text-center">{food.unit}</td>
               <td className="px-4 py-2 text-center">{food.calories} kcal</td>
+              <td className="px-4 py-2 text-center">
+                <button
+                  onClick={() => handleToggleFavorite(food.id)}
+                  className={food.favorite ? "text-yellow-500" : "text-gray-400"}
+                >
+                  ⭐
+                </button>
+              </td>
               <td className="px-4 py-2 text-center">
                 <button
                   onClick={() => openEditModal(food)}

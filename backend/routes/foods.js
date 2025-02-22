@@ -1,57 +1,68 @@
 const express = require("express");
-const pool = require("../db");
+const {
+  getFoods, 
+  addFood,
+  updateFood,
+  deleteFood,
+  toggleFavorite
+} = require("../services/foods");
 
 const router = express.Router();
 
 // Get all foods
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM foods ORDER BY name ASC");
-    res.json(result.rows);
+    const foods = await getFoods(req.query.name);
+    res.json(foods);
   } catch (error) {
-    res.status(500).json({ error: "Database error" });
+    console.error("Error fetching foods:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // Add a new food
 router.post("/", async (req, res) => {
-  const { name, unit, calories } = req.body;
-
   try {
-    const result = await pool.query(
-      "INSERT INTO foods (name, unit, calories_per_unit) VALUES ($1, $2, $3) RETURNING *",
-      [name, unit, parseFloat(calories)]
-    );
-    res.status(201).json(result.rows[0]);
+    const food = await addFood(req.body);
+    res.status(201).json(food);
   } catch (error) {
-    res.status(500).json({ error: "Database error" });
+    console.error("Error adding food:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 
 // Update an existing food
 router.put("/:id", async (req, res) => {
-  const { name, unit, calories } = req.body;
   const { id } = req.params;
 
   try {
-    const result = await pool.query(
-      "UPDATE foods SET name=$1, unit=$2, calories_per_unit=$3 WHERE id=$4 RETURNING *",
-      [name, unit, parseFloat(calories), id]
-    );
-    res.json(result.rows[0]);
+    const food = await updateFood(id, req.body);
+    res.json(food);
   } catch (error) {
-    res.status(500).json({ error: "Database error" });
+    console.error("Error updating food:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // Delete a food
 router.delete("/:id", async (req, res) => {
   try {
-    await pool.query("DELETE FROM foods WHERE id=$1", [req.params.id]);
-    res.status(204).send();
+    const deletedFood = deleteFood(req.params.id);
+    res.status(204).send(deletedFood);
   } catch (error) {
-    res.status(500).json({ error: "Database error" });
+    console.error("Error deleting food:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.patch("/:id/favorite", async (req, res) => {
+  try {
+    const updatedFood = await toggleFavorite(req.params.id);
+    res.json(updatedFood);
+  } catch (error) {
+    console.error("Error updating favorite:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
