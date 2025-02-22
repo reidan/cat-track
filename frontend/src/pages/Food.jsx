@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import styles
+
+import Modal from "../components/Modal";
 
 import { Foods } from "../api";
 const { fetchFoods, addFood, updateFood, toggleFavorite } = Foods;
@@ -11,7 +15,10 @@ function Food() {
   const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
-    fetchFoods().then(setFoods);
+    fetchFoods().then(setFoods).catch((error) => {
+        console.error("Error fetching foods:", error);
+        toast.error("Failed to fetch foods.");
+      });
   }, []);
 
   // Search foods by name
@@ -22,10 +29,16 @@ function Food() {
 
   // Toggle favorite
   const handleToggleFavorite = async (foodId) => {
-    const updatedFood = await toggleFavorite(foodId);
-    setFoods(foods.map(food => 
-      food.id === foodId ? { ...food, favorite: updatedFood.favorite } : food
-    ));
+    try {
+      const updatedFood = await toggleFavorite(foodId);
+      setFoods(foods.map(food => 
+        food.id === foodId ? { ...food, favorite: updatedFood.favorite } : food
+      ));
+      toast.success(" Food favourited!");
+    } catch (e) {
+      console.error("Error fetching food logs:", e);
+      toast.error("Failed to favourite food.");
+    }
   };
 
   // Open modal for adding a new food
@@ -56,11 +69,19 @@ function Food() {
     let response;
     if (isAdding) {
       addFood(editingFood).then((data) => {
-        setFoods([...foods, data]);
+        toast.success("✅ Food added!");
+        fetchFoods();
+      }).catch((error) => {
+        console.log(`ERROR during add: ${error}`);
+        toast.error("❌ Failed to add food.");
       });
     } else {
       updateFood(editingFood.id, editingFood).then((data) => {
-        setFoods(foods.map((data) => (food.id === editingFood.id ? editingFood : food)));
+        toast.success("✏️ Food updated!");
+        fetchFoods();
+      }).catch((error) => {
+        console.log(`ERROR during update: ${error}`);
+        toast.error("❌ Failed to update food.");
       });
     }
 
@@ -70,6 +91,7 @@ function Food() {
 
   return (
     <div className="w-full max-w-3xl">
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop />
       {/* Header & Add Button in Line */}
       <div className="flex justify-between items-center mt-6 mb-4">
         <h2 className="text-2xl font-bold">🍽️ Foods</h2>
@@ -139,40 +161,12 @@ function Food() {
 
       {/* Add/Edit Modal */}
       {isModalOpen && editingFood !== null && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-            <h2 className="text-xl font-bold mb-4">{isAdding ? "Add Food" : "Edit Food"}</h2>
-
-            {/* Food Name Input */}
-            <label className="block mb-2 font-semibold">Food Name:</label>
-            <input
-              type="text"
-              value={editingFood.name}
-              onChange={(e) => changeFood("name", e.target.value)}
-              className="border p-2 rounded w-full mb-2"
-            />
-
-            {/* Unit Input */}
-            <label className="block mb-2 font-semibold">Unit (e.g., gram, can):</label>
-            <input
-              type="text"
-              value={editingFood.unit}
-              onChange={(e) => changeFood("unit", e.target.value)}
-              className="border p-2 rounded w-full mb-2"
-            />
-
-            {/* Calories Input (allows decimals) */}
-            <label className="block mb-2 font-semibold">Calories per Unit:</label>
-            <input
-              type="number"
-              step="0.001"
-              value={editingFood.calories}
-              onChange={(e) => changeFood("calories", parseFloat(e.target.value))}
-              className="border p-2 rounded w-full mb-2"
-            />
-
-            {/* Modal Actions */}
-            <div className="flex justify-end gap-2 mt-4">
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title={isAdding ? "Add Food" : "Edit Food"}
+          actions={
+            <>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400"
@@ -185,9 +179,37 @@ function Food() {
               >
                 Save
               </button>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+        >
+          {/* Food Name Input */}
+          <label className="block mb-2 font-semibold">Food Name:</label>
+          <input
+            type="text"
+            value={editingFood.name}
+            onChange={(e) => changeFood("name", e.target.value)}
+            className="border p-2 rounded w-full mb-2"
+          />
+
+          {/* Unit Input */}
+          <label className="block mb-2 font-semibold">Unit (e.g., gram, can):</label>
+          <input
+            type="text"
+            value={editingFood.unit}
+            onChange={(e) => changeFood("unit", e.target.value)}
+            className="border p-2 rounded w-full mb-2"
+          />
+
+          {/* Calories Input (allows decimals) */}
+          <label className="block mb-2 font-semibold">Calories per Unit:</label>
+          <input
+            type="number"
+            step="0.001"
+            value={editingFood.calories}
+            onChange={(e) => changeFood("calories", parseFloat(e.target.value))}
+            className="border p-2 rounded w-full mb-2"
+          />
+        </Modal>
       )}
     </div>
   );
