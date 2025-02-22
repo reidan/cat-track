@@ -66,21 +66,22 @@ function Home() {
           </tr>
         </thead>
         <tbody>
-          {dailySummaries.map((summary) => {
-            const caloriesEaten = summary.total_calories || 0;
-            const calorieGoal = summary.calorie_goal || 0;
+          {cats.map((cat) => {
+            const summary = dailySummaries[cat.id];
+            const caloriesEaten = summary?.total_calories || 0;
+            const calorieGoal = summary?.calorie_goal || 0;
             const difference = caloriesEaten - calorieGoal;
             const progress = calorieGoal > 0 ? (caloriesEaten / calorieGoal) * 100 : 0;
 
             return (
-              <tr key={summary.cat_id} className="border-t">
+              <tr key={cat.id} className="border-t">
                 <td className="px-4 py-2 text-center">
                   {/*<img
                     src={cat.photo}
                     alt={cat.name}
                     className="w-16 h-16 object-cover rounded-full border"
                   />*/}
-                  {summary.cat_name}</td>
+                  {cat.name}</td>
                 <td className="px-4 py-2 text-center">{caloriesEaten} kcal</td>
                 <td className="px-4 py-2 text-center">{calorieGoal} kcal</td>
                 <td
