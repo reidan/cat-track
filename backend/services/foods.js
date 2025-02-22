@@ -35,7 +35,7 @@ const addFood = async (food) => {
   }
 };
 
-const updateFood = async (foodId, food) {
+const updateFood = async (foodId, food) => {
   const { name, unit, calories } = food;
   try {
     const { rows } = await query(
@@ -52,7 +52,7 @@ const updateFood = async (foodId, food) {
 
 };
 
-const deleteFood = async (foodId) {
+const deleteFood = async (foodId) => {
   const { rows } = await query(
     "DELETE FROM foods WHERE id=$1",
     [foodId]

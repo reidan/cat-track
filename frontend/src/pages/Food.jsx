@@ -117,7 +117,7 @@ function Food() {
                   onClick={() => handleToggleFavorite(food.id)}
                   className={food.favorite ? "text-yellow-500" : "text-gray-400"}
                 >
-                  ⭐
+                  FAV
                 </button>
               </td>
               <td className="px-4 py-2 text-center">
