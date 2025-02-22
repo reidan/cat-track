@@ -34,7 +34,7 @@ function Food() {
       setFoods(foods.map(food => 
         food.id === foodId ? { ...food, favorite: updatedFood.favorite } : food
       ));
-      toast.success(" Food favourited!");
+      toast.success("⭐ Food favourited!");
     } catch (e) {
       console.error("Error fetching food logs:", e);
       toast.error("Failed to favourite food.");
