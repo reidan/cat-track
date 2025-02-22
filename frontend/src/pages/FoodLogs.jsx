@@ -146,10 +146,8 @@ function FoodLogs() {
         ...editingLog,
         timestamp: new Date().toISOString(),
       }).then(() => {
-        if (!addMore) {
-          handleSuccessfulSave();
-          toast.success("✅ Food log added!");
-        }
+        handleSuccessfulSave(addMore);
+        toast.success("✅ Food log added!");
       }).catch((e) => {
         console.log(`ERROR during add: ${e}`);
         toast.error("❌ Failed to add log.");
