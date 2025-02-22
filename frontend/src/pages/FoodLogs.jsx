@@ -110,7 +110,7 @@ function FoodLogs() {
   const updateLog = (field, value) => {
     if (!editingLog) return;
     console.log(`Updating ${field}: ${value}`);
-    console.log(`Value: ${JSON.stringify(value, null 2)}`);
+    console.log(`Value: ${JSON.stringify(value, null, 2)}`);
 
     let updatedLog = { ...editingLog, [field]: value };
 
