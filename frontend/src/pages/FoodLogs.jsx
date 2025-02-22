@@ -109,21 +109,23 @@ function FoodLogs() {
   // Handle input change and update calories dynamically
   const updateLog = (field, value) => {
     if (!editingLog) return;
-    console.log(`Updating ${field}: ${value}`);
-    console.log(`Value: ${JSON.stringify(value, null, 2)}`);
 
     let updatedLog = { ...editingLog, [field]: value };
+    console.log(`Updating ${field}: ${value}`);
+    console.log(`Value: ${JSON.stringify(value, null, 2)}`);
 
     // Auto-update unit and calories when food is selected
     if (field === "foodId") {
       const food = foods.find((f) => f.id === Number(value));
       if (food) {
+        updatedLog.food = food;
         updatedLog.unit = food.unit;
         updatedLog.calories = food.calories * parseFloat(updatedLog.quantity || 0);
       }
     }
 
     if (field === "food") {
+      updatedLog.food = value;
       if (value) {
         updatedLog.unit = value?.unit;
         updatedLog.calories = value?.calories * parseFloat(updatedLog.quantity || 0);
