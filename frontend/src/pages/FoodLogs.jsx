@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Select from "react-select"; 
 import { DateTime } from "luxon";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
@@ -20,8 +21,6 @@ function FoodLogs() {
   
   const [cats, setCats] = useState([]);
   const [foods, setFoods] = useState([]);
-  const [filteredFoods, setFilteredFoods] = useState([]);
-  const [foodSearch, setFoodSearch] = useState("");
 
   // Applied filters (Only updates when "Apply Filters" is clicked)
   const [filters, setFilters] = useState({ catId: "", date: getTodayDate() });
@@ -38,8 +37,8 @@ function FoodLogs() {
   useEffect(() => {
     fetchCats().then((data) => { setCats(data) });
     fetchFoods().then((data) => { 
-      setFoods(data);
-      setFilteredFoods(data); // Initialize filtered list
+      const sortedFoods = data.sort((a, b) => b.favorite - a.favorite);
+      setFoods(sortedFoods);
     });
   }, []);
 
@@ -300,28 +299,18 @@ function FoodLogs() {
         ))}
       </select>
 
-      {/* Food Typeahead Search */}
+      {/* Food Selection with Autocomplete */}
       <label className="block mb-2 font-semibold">Choose a Food:</label>
-      <input
-        type="text"
-        value={foodSearch}
-        onChange={(e) => setFoodSearch(e.target.value)}
+      <Select
+        options={foods.map((food) => ({
+          value: food.id,
+          label: `${food.favorite ? "⭐ " : ""}${food.name} (${food.unit})`,
+        }))}
+        value={foods.find((food) => food.id === editingLog.foodId)}
+        onChange={(selected) => updateLog("foodId", selected.value)}
         placeholder="Search food..."
-        className="border p-2 rounded w-full mb-2"
+        className="mb-2"
       />
-
-      {/* Dropdown with filtered foods */}
-      <select
-        value={editingLog.foodId}
-        onChange={(e) => updateLog("foodId", e.target.value)}
-        className="border p-2 rounded w-full mb-2"
-      >
-        {filteredFoods.map((food) => (
-          <option key={food.id} value={food.id}>
-            {food.favorite ? "⭐" : ""} {food.name} ({food.unit})
-          </option>
-        ))}
-      </select>
 
       {/* Auto-filled Unit */}
       <label className="block mb-2 font-semibold">Unit:</label>
