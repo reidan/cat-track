@@ -47,8 +47,6 @@ function FoodLogs() {
     fetchLogs();
   }, [page, filters]);
 
-  const buildFoodOption = 
-
   const fetchLogs = async () => {
     setLoading(true);
     try {
