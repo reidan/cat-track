@@ -111,23 +111,14 @@ function FoodLogs() {
     if (!editingLog) return;
 
     let updatedLog = { ...editingLog, [field]: value };
-    console.log(`Updating ${field}: ${value}`);
-    console.log(`Value: ${JSON.stringify(value, null, 2)}`);
-    console.log(`Editing Log Food: ${JSON.stringify(editingLog.food, null, 2)}`);
+    console.log(`Updating ${field}`);
 
-    // Auto-update unit and calories when food is selected
-    if (field === "foodId") {
-      const food = foods.find((f) => f.id === Number(value));
-      if (food) {
-        updatedLog.food = food;
-        updatedLog.unit = food.unit;
-        updatedLog.calories = food.calories * parseFloat(updatedLog.quantity || 0);
-      }
-    }
 
     if (field === "food") {
+      console.log(`Updating Food: ${JSON.stringify(value, null, 2)}`);
       updatedLog.food = value;
       if (value) {
+        updatedLog.foodId = value?.id;
         updatedLog.unit = value?.unit;
         updatedLog.calories = value?.calories * parseFloat(updatedLog.quantity || 0);
       }
@@ -135,7 +126,10 @@ function FoodLogs() {
 
     // Recalculate calories when quantity changes
     if (field === "quantity") {
-      const food = foods.find((f) => f.id === Number(editingLog.foodId));
+      console.log(`Updating Quantity: ${value}`);
+      updatedLog.quantity = value;
+      const food = updatedLog?.food;
+      console.log(`Using food: ${JSON.stringify(food, null, 2)}`);
       if (food) {
         updatedLog.calories = food.calories * parseFloat(value);
       }
