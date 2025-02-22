@@ -10,12 +10,11 @@ const QUERY_DAILY_SUMMARY = `
   SELECT 
     c.id AS cat_id,
     c.name AS cat_name,
-    ROUND(SUM(f.calories), 2) AS total_calories,
-    CURRENT_DATE AS date
+    c.calorie_goal AS calorie_goal,
+    ROUND(SUM(f.calories), 2) AS total_calories
   FROM food_logs f
   JOIN cats c ON f.cat_id = c.id
-  WHERE
-    DATE(f.timestamp AT TIME ZONE 'America/Vancouver') = CURRENT_DATE
+  WHERE DATE(f.timestamp AT TIME ZONE $1) = $2
   GROUP BY c.id, c.name
   ORDER BY cat_name;
 `;
@@ -32,9 +31,9 @@ const QUERY_WEEKLY_STATS = `
 `;
 
 // Get daily summary of cat's calories
-router.get("/daily-summary", async (req, res) => {
+router.get("/daily-summary/:date", async (req, res) => {
   try {
-    const result = await pool.query(QUERY_DAILY_SUMMARY, [USER_TIMEZONE]);
+    const result = await pool.query(QUERY_DAILY_SUMMARY, [USER_TIMEZONE, req.params.date]);
     res.json(result.rows);
   } catch (error) {
     res.status(500).json({ error: "Database error" });

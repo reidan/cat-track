@@ -7,7 +7,7 @@ export const fetchWeeklyFoodLogs = async (catId) => {
 };
 
 // Fetch daily food summary for all cats
-export const fetchDailySummary = async () => {
-  const response = await api.get("/metrics/daily-summary");
+export const fetchDailySummary = async (date) => {
+  const response = await api.get(`/metrics/daily-summary/${date}`);
   return response.data;
 };

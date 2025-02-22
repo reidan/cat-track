@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { DateTime } from "luxon";
 import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 import { Cats, Metrics } from "../api";
 const { fetchCats } = Cats;
 const { fetchWeeklyFoodLogs, fetchDailySummary } = Metrics;
+
+const getTodayDate = () => DateTime.now().toFormat("yyyy-MM-dd");
 
 function Home() {
   const [cats, setCats] = useState([]);
@@ -18,7 +21,7 @@ function Home() {
         setSelectedCat(data[0].id);
       }
     });
-    fetchDailySummary().then((data) => {
+    fetchDailySummary(getTodayDate()).then((data) => {
       const catToDailySummary = {};
       data.map((summary) => {
         catToDailySummary[summary.cat_id] = summary;
@@ -66,7 +69,7 @@ function Home() {
           {cats.map((cat) => {
             const summary = dailySummaries[cat.id];
             const caloriesEaten = summary?.total_calories || 0;
-            const calorieGoal = cat.calorieGoal || 0;
+            const calorieGoal = summary.calorie_goal || 0;
             const difference = caloriesEaten - calorieGoal;
             const progress = calorieGoal > 0 ? (caloriesEaten / calorieGoal) * 100 : 0;
 
