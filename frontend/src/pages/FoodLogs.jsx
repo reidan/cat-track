@@ -47,6 +47,8 @@ function FoodLogs() {
     fetchLogs();
   }, [page, filters]);
 
+  const buildFoodOption = 
+
   const fetchLogs = async () => {
     setLoading(true);
     try {
@@ -317,18 +319,10 @@ function FoodLogs() {
       {/* Food Selection with Autocomplete */}
       <label className="block mb-2 font-semibold">Choose a Food:</label>
       <Select
-        options={foods.map((food) => ({
-          value: food.id,
-          label: `${food.favorite ? "⭐ " : ""}${food.name}`,
-        }))}
-        value={foods.find((food) => {
-          console.log(`In value function: ${JSON.stringify(food)}`);
-          return food.id === editingLog.foodId || null;
-        })}
-        defaultValue={foods.find((food) => {
-          console.log(`In value function: ${JSON.stringify(food)}`);
-          return food.id === editingLog.foodId || null;
-        })}
+        options={foods}
+        getOptionLabel={(food) => `${food.favorite ? "⭐ " : ""}${food.name}`}
+        getOptionValue={(food) => `${food.id}`}
+        value={foods.find((food) => food.id === editingLog?.foodId) || null}
         onChange={(selected) => updateLog("foodId", selected.value)}
         placeholder="Search food..."
         className="mb-2"
