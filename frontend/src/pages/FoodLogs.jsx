@@ -333,7 +333,7 @@ function FoodLogs() {
         getOptionLabel={(food) => `${food.favorite ? "⭐ " : ""}${food.name}`}
         getOptionValue={(food) => `${food.id}`}
         value={editingLog.food}
-        onChange={(selected) => updateLog("food", selected.value)}
+        onChange={(selected) => updateLog("food", selected)}
         placeholder="Search food..."
         className="mb-2"
       />
