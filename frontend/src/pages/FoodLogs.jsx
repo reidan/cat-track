@@ -20,6 +20,8 @@ function FoodLogs() {
   
   const [cats, setCats] = useState([]);
   const [foods, setFoods] = useState([]);
+  const [filteredFoods, setFilteredFoods] = useState([]);
+  const [foodSearch, setFoodSearch] = useState("");
 
   // Applied filters (Only updates when "Apply Filters" is clicked)
   const [filters, setFilters] = useState({ catId: "", date: getTodayDate() });
@@ -35,7 +37,10 @@ function FoodLogs() {
 
   useEffect(() => {
     fetchCats().then((data) => { setCats(data) });
-    fetchFoods().then((data) => { setFoods(data) });
+    fetchFoods().then((data) => { 
+      setFoods(data);
+      setFilteredFoods(data); // Initialize filtered list
+    });
   }, []);
 
   useEffect(() => {
@@ -67,6 +72,15 @@ function FoodLogs() {
       setLoading(false);
     }
   };
+
+  // Filter foods based on search term and prioritize favorites
+  useEffect(() => {
+    let filtered = foods.filter((food) =>
+      food.name.toLowerCase().includes(foodSearch.toLowerCase())
+    );
+    filtered.sort((a, b) => (b.favorite - a.favorite)); // Favorite foods appear first
+    setFilteredFoods(filtered);
+  }, [foodSearch, foods]);
 
   const handleDateChange = (newDate) => {
     setTempFilters((prev) => ({ ...prev, date: newDate }));
@@ -286,17 +300,25 @@ function FoodLogs() {
         ))}
       </select>
 
-      {/* Select Food */}
+      {/* Food Typeahead Search */}
       <label className="block mb-2 font-semibold">Choose a Food:</label>
+      <input
+        type="text"
+        value={foodSearch}
+        onChange={(e) => setFoodSearch(e.target.value)}
+        placeholder="Search food..."
+        className="border p-2 rounded w-full mb-2"
+      />
+
+      {/* Dropdown with filtered foods */}
       <select
         value={editingLog.foodId}
         onChange={(e) => updateLog("foodId", e.target.value)}
         className="border p-2 rounded w-full mb-2"
       >
-        <option value="">Select a food</option>
-        {foods.map((food) => (
+        {filteredFoods.map((food) => (
           <option key={food.id} value={food.id}>
-            {food.name} ({food.unit})
+            {food.favorite ? "⭐" : ""} {food.name} ({food.unit})
           </option>
         ))}
       </select>
