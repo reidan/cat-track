@@ -71,16 +71,7 @@ function FoodLogs() {
       setLoading(false);
     }
   };
-
-  // Filter foods based on search term and prioritize favorites
-  useEffect(() => {
-    let filtered = foods.filter((food) =>
-      food.name.toLowerCase().includes(foodSearch.toLowerCase())
-    );
-    filtered.sort((a, b) => (b.favorite - a.favorite)); // Favorite foods appear first
-    setFilteredFoods(filtered);
-  }, [foodSearch, foods]);
-
+  
   const handleDateChange = (newDate) => {
     setTempFilters((prev) => ({ ...prev, date: newDate }));
   };
