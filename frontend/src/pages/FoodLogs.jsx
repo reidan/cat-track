@@ -101,6 +101,7 @@ function FoodLogs() {
       ...log,
       catId: cat_id,
       foodId: food_id,
+      food: foods.find((food) => food_id === food.id),
     });
     setIsModalOpen(true);
   };
@@ -108,6 +109,8 @@ function FoodLogs() {
   // Handle input change and update calories dynamically
   const updateLog = (field, value) => {
     if (!editingLog) return;
+    console.log(`Updating ${field}: ${value}`);
+    console.log(`Value: ${JSON.stringify(value, null 2)}`);
 
     let updatedLog = { ...editingLog, [field]: value };
 
@@ -117,6 +120,13 @@ function FoodLogs() {
       if (food) {
         updatedLog.unit = food.unit;
         updatedLog.calories = food.calories * parseFloat(updatedLog.quantity || 0);
+      }
+    }
+
+    if (field === "food") {
+      if (value) {
+        updatedLog.unit = value?.unit;
+        updatedLog.calories = value?.calories * parseFloat(updatedLog.quantity || 0);
       }
     }
 
@@ -320,8 +330,8 @@ function FoodLogs() {
         options={foods}
         getOptionLabel={(food) => `${food.favorite ? "⭐ " : ""}${food.name}`}
         getOptionValue={(food) => `${food.id}`}
-        value={foods.find((food) => food.id === editingLog?.foodId) || null}
-        onChange={(selected) => updateLog("foodId", selected.value)}
+        value={editingLog.food}
+        onChange={(selected) => updateLog("food", selected.value)}
         placeholder="Search food..."
         className="mb-2"
       />
