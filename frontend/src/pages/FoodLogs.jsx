@@ -71,7 +71,7 @@ function FoodLogs() {
       setLoading(false);
     }
   };
-  
+
   const handleDateChange = (newDate) => {
     setTempFilters((prev) => ({ ...prev, date: newDate }));
   };
@@ -295,9 +295,9 @@ function FoodLogs() {
       <Select
         options={foods.map((food) => ({
           value: food.id,
-          label: `${food.favorite ? "⭐ " : ""}${food.name} (${food.unit})`,
+          label: `${food.favorite ? "⭐ " : ""}${food.name}`,
         }))}
-        value={foods.find((food) => food.id === editingLog.foodId)}
+        // value={foods.find((food) => food.id === editingLog.foodId) || null}
         onChange={(selected) => updateLog("foodId", selected.value)}
         placeholder="Search food..."
         className="mb-2"
