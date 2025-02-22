@@ -324,7 +324,7 @@ function FoodLogs() {
         value={foods.find((food) => {
           console.log(`In value function: ${JSON.stringify(food)}`);
           return food.id === editingLog.foodId || null;
-        }}
+        })}
         onChange={(selected) => updateLog("foodId", selected.value)}
         placeholder="Search food..."
         className="mb-2"
