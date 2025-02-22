@@ -27,6 +27,9 @@ router.post("/", async (req, res) => {
     res.status(201).json(food);
   } catch (error) {
     console.error("Error adding food:", error);
+    if (error.message.includes("already exists")) {
+      return res.status(400).json({ error: error.message });
+    }
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -41,6 +44,9 @@ router.put("/:id", async (req, res) => {
     res.json(food);
   } catch (error) {
     console.error("Error updating food:", error);
+    if (error.message.includes("already exists")) {
+      return res.status(400).json({ error: error.message });
+    }
     res.status(500).json({ error: "Internal server error" });
   }
 });
