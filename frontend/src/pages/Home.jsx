@@ -43,11 +43,6 @@ function Home() {
     }
   }, [selectedCat]);
 
-  // Get today's date in YYYY-MM-DD format
-  const getTodayDate = () => {
-    return new Date().toLocaleDateString();
-  };
-
   return (
     <div className="w-full max-w-3xl text-center">
       <h2 className="text-3xl font-bold mt-6">Welcome to the Cat Tracker! 🐱</h2>
