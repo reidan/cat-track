@@ -404,7 +404,7 @@ function FoodLogs() {
         onChange={(e) => updateLog("quantity", e.target.value)}
         className="border p-2 rounded w-half mb-2"
       />
-      <span>{editingLog.unit}</span>
+      <span>&nbsp;&nbsp;{editingLog.unit}</span>
 
       {/* Calculated Calories */}
       <p className="text-lg font-bold">New Calories: {editingLog.calories} kcal</p>
@@ -415,11 +415,11 @@ function FoodLogs() {
           <p className="text-lg font-bold text-blue-500">
             Eaten Today: {selectedCatSummary.caloriesEaten} kcal
           </p>
-          <p className={`text-lg font-bold ${selectedCatSummary.remainingCalories < 0 ? "text-red-500" : "text-green-500"}`}>
-            Remaining Calories: {selectedCatSummary.remainingCalories} kcal
+          <p className={`text-lg font-bold ${selectedCatSummary.caloriesRemaining < 0 ? "text-red-500" : "text-green-500"}`}>
+            Remaining Calories: {selectedCatSummary.caloriesRemaining} kcal
           </p>
-          <p className={`text-lg font-bold ${(selectedCatSummary.remainingCalories - editingLog.calories) < 0 ? "text-red-500" : "text-green-500"}`}>
-            Remaining Calories after new food: {selectedCatSummary.remainingCalories - editingLog.calories} kcal
+          <p className={`text-lg font-bold ${(selectedCatSummary.caloriesRemaining - editingLog.calories) < 0 ? "text-red-500" : "text-green-500"}`}>
+            Remaining Calories after new food: {selectedCatSummary.caloriesRemaining - editingLog.calories} kcal
           </p>
         </div>
       )}
