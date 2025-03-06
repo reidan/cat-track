@@ -7,10 +7,16 @@ import "react-toastify/dist/ReactToastify.css"; // Import styles
 import DateInput from "../components/DateInput";
 import Modal from "../components/Modal";
 
-import { Cats, Foods, FoodLogs as FoodLogsAPI } from "../api";
+import { 
+  Cats, 
+  Foods, 
+  FoodLogs as FoodLogsAPI,
+  Metrics, 
+} from "../api";
 const { fetchCats } = Cats;
 const { fetchFoods } = Foods;
 const { fetchFoodLogs, addFoodLog, updateFoodLog, deleteFoodLog } = FoodLogsAPI;
+const { fetchDailySummary } = Metrics;
 
 const getTodayDate = () => DateTime.now().toFormat("yyyy-MM-dd");
 
@@ -22,10 +28,18 @@ function FoodLogs() {
   
   const [cats, setCats] = useState([]);
   const [foods, setFoods] = useState([]);
+  const [dailySummaries, setDailySummaries] = useState([]);
 
   // Applied filters (Only updates when "Apply Filters" is clicked)
   const [filters, setFilters] = useState({ catId: "", date: getTodayDate() });
   const [tempFilters, setTempFilters] = useState({ catId: "", date: getTodayDate() });
+
+  const [selectedCatSummary, setSelectedCatSummary] = useState({
+    caloriesEaten: 0,
+    calorieGoal: 0,
+    caloriesRemaining: 0,
+    progress: 0,
+  });
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLog, setEditingLog] = useState(null);
@@ -37,6 +51,13 @@ function FoodLogs() {
 
   useEffect(() => {
     fetchCats().then((data) => { setCats(data) });
+    fetchDailySummary(getTodayDate()).then((data) => {
+      const catToDailySummary = {};
+      data.map((summary) => {
+        catToDailySummary[summary.cat_id] = summary;
+      });
+      setDailySummaries(catToDailySummary);
+    });
     fetchFoods().then((data) => { 
       const sortedFoods = data.sort((a, b) => b.favorite - a.favorite);
       setFoods(sortedFoods);
@@ -46,6 +67,17 @@ function FoodLogs() {
   useEffect(() => {
     fetchLogs();
   }, [page, filters]);
+
+  const refreshDailySummaries = async () => {
+    fetchDailySummary(getTodayDate()).then((data) => {
+      const catToDailySummary = {};
+      data.map((summary) => {
+        catToDailySummary[summary.cat_id] = summary;
+      });
+      setDailySummaries(catToDailySummary);
+    });
+
+  }
 
   const fetchLogs = async () => {
     setLoading(true);
@@ -113,6 +145,25 @@ function FoodLogs() {
     let updatedLog = { ...editingLog, [field]: value };
     console.log(`Updating ${field}`);
 
+    if (field === "catId") {
+      console.log(`Updating Cat: ${value}`);
+      updatedLog.catId = value;
+      if (value) {
+        summary = dailySummaries[catId];
+        if (summary) {
+          const caloriesEaten = summary?.total_calories || 0;
+          const calorieGoal = summary?.calorieGoal || 0;
+          const difference = caloriesEaten - calorieGoal;
+          const progress = calorieGoal > 0 ? (caloriesEaten / calorieGoal) * 100 : 0;
+          setSelectedCatSummary({
+            caloriesEaten,
+            calorieGoal,
+            caloriesRemaining: difference,
+            progress,
+          });
+        }
+      }
+    }
 
     if (field === "food") {
       console.log(`Updating Food: ${JSON.stringify(value, null, 2)}`);
@@ -159,6 +210,7 @@ function FoodLogs() {
         timestamp: new Date().toISOString(),
       }).then(() => {
         handleSuccessfulSave(addMore);
+        refreshDailySummaries();
         toast.success("✅ Food log added!");
       }).catch((e) => {
         console.log(`ERROR during add: ${e}`);
@@ -169,6 +221,7 @@ function FoodLogs() {
         (data) => {
           if (!addMore) {
             handleSuccessfulSave();
+            refreshDailySummaries();
             toast.success("✏️ Food log updated!");
           }
       }).catch((e) => {
@@ -185,6 +238,7 @@ function FoodLogs() {
     if (!isConfirmed) return;
     deleteFoodLog(id).then((data) => {
       fetchLogs();
+      refreshDailySummaries();
       toast.success("🗑️ Food log deleted!");
     });
   };
@@ -334,13 +388,13 @@ function FoodLogs() {
       />
 
       {/* Auto-filled Unit */}
-      <label className="block mb-2 font-semibold">Unit:</label>
+      {/*<label className="block mb-2 font-semibold">Unit:</label>
       <input
         type="text"
         value={editingLog.unit}
         readOnly
         className="border p-2 rounded w-full mb-2 bg-gray-100"
-      />
+      />*/}
 
       {/* Quantity Input */}
       <label className="block mb-2 font-semibold">Quantity:</label>
@@ -348,11 +402,27 @@ function FoodLogs() {
         type="number"
         value={editingLog.quantity}
         onChange={(e) => updateLog("quantity", e.target.value)}
-        className="border p-2 rounded w-full mb-2"
-      />
+        className="border p-2 rounded w-half mb-2"
+      />{editingLog.unit}
 
       {/* Calculated Calories */}
-      <p className="text-lg font-bold">Total Calories: {editingLog.calories} kcal</p>
+      <p className="text-lg font-bold">New Calories: {editingLog.calories} kcal</p>
+
+      {/* Display Calories Info */}
+      {isAdding && editingLog?.catId && (
+        <div className="bg-gray-100 p-3 rounded-lg mb-2">
+          <p className="text-lg font-bold text-blue-500">
+            Eaten Today: {selectedCatSummary.caloriesEaten} kcal
+          </p>
+          <p className={`text-lg font-bold ${selectedCatSummary.remainingCalories < 0 ? "text-red-500" : "text-green-500"}`}>
+            Remaining Calories: {selectedCatSummary.remainingCalories} kcal
+          </p>
+          <p className={`text-lg font-bold ${(selectedCatSummary.remainingCalories - editingLog.calories) < 0 ? "text-red-500" : "text-green-500"}`}>
+            Remaining Calories after new food: {selectedCatSummary.remainingCalories - editingLog.calories} kcal
+          </p>
+        </div>
+      )}
+
   </Modal>
 )}
 
