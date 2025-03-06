@@ -149,7 +149,7 @@ function FoodLogs() {
       console.log(`Updating Cat: ${value}`);
       updatedLog.catId = value;
       if (value) {
-        summary = dailySummaries[value];
+        const summary = dailySummaries[value];
         if (summary) {
           const caloriesEaten = summary?.total_calories || 0;
           const calorieGoal = summary?.calorieGoal || 0;
