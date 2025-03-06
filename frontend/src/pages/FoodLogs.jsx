@@ -403,7 +403,8 @@ function FoodLogs() {
         value={editingLog.quantity}
         onChange={(e) => updateLog("quantity", e.target.value)}
         className="border p-2 rounded w-half mb-2"
-      />{editingLog.unit}
+      />
+      <span>{editingLog.unit}</span>
 
       {/* Calculated Calories */}
       <p className="text-lg font-bold">New Calories: {editingLog.calories} kcal</p>
