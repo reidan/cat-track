@@ -152,7 +152,7 @@ function FoodLogs() {
         const summary = dailySummaries[value];
         if (summary) {
           const caloriesEaten = summary?.total_calories || 0;
-          const calorieGoal = summary?.calorieGoal || 0;
+          const calorieGoal = summary?.calorie_goal || 0;
           const difference = caloriesEaten - calorieGoal;
           const progress = calorieGoal > 0 ? (caloriesEaten / calorieGoal) * 100 : 0;
           setSelectedCatSummary({
