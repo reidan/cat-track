@@ -1,4 +1,4 @@
-import { useBackendStatus } from "../contexts/BackendStatusContext";
+import { useBackendStatus } from "../context/BackendStatusContext";
 
 const BackendStatusBanner = () => {
   const isBackendAvailable = useBackendStatus();
