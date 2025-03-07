@@ -4,6 +4,7 @@ import * as Foods from "./foods";
 import * as FoodLogs from "./foodLogs";
 import * as Metrics from "./metrics";
 import * as BulkLogs from "./bulkLogs";
+import * as Health from "./health";
 
 export {
   Cats,
@@ -11,4 +12,5 @@ export {
   FoodLogs,
   Metrics,
   BulkLogs,
+  Health,
 };
