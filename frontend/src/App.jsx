@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, NavLink } from "react-router-dom";
 import { useState } from "react";
 
-import { BackendStatusProvider } from "./contexts/BackendStatusContext";
+import { BackendStatusProvider } from "./context/BackendStatusContext";
 import BackendStatusBanner from "./components/BackendStatusBanner";
 
 import Home from "./pages/Home";
