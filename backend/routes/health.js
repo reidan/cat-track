@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { query } = require("../db/db"); // ✅ Import database connection
+const { query } = require("../db"); // ✅ Import database connection
 
 router.get("/", async (req, res) => {
   try {
